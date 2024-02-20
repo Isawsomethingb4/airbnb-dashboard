@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 
 # --------------------------------APP-------------------------
-app=Dash(__name__, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
+app=Dash(__name__, use_pages=True, pages_folder='apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
@@ -48,4 +48,4 @@ app.layout=html.Div([
 ])
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(port=8080,debug=True)
