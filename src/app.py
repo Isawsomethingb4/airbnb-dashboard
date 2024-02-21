@@ -5,6 +5,7 @@ import os
 
 
 # --------------------------------APP-------------------------
+
 pages_folder = os.getcwd() + '/apps'
 app=Dash(__name__, use_pages=True, pages_folder=pages_folder, external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
@@ -50,4 +51,4 @@ app.layout=html.Div([
 ])
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(port=8081,debug=True)
