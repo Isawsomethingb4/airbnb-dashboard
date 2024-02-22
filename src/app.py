@@ -5,9 +5,9 @@ import os
 
 
 # --------------------------------APP-------------------------
-# pages_folder = os.getcwd() + '/apps'
-# app=Dash(__name__, use_pages=True, pages_folder=pages_folder, external_stylesheets=[dbc.themes.JOURNAL])
-app=Dash(__name__, suppress_callback_exceptions=True, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
+pages_folder = os.getcwd() + '/apps'
+app=Dash(__name__, use_pages=True, pages_folder=pages_folder, external_stylesheets=[dbc.themes.JOURNAL])
+# app=Dash(__name__, suppress_callback_exceptions=True, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
