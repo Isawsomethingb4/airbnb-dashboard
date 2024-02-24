@@ -2,7 +2,6 @@ import dash
 from dash import Dash, dcc, html, Input, Output, callback
 import dash_bootstrap_components as dbc
 import pandas as pd
-import altair as alt
 import plotly.express as px
 import plotly.graph_objects as go
 dash.register_page(__name__, suppress_callback_exceptions=True, path='/')
@@ -15,12 +14,12 @@ default_price_max=listings.loc[idx_Van_DT, 'price'].max()
 default_listing_count=listings.loc[idx_Van_DT, ].shape[0]
 # ---------------------content style-------------------
 CONTENT_STYLE = {
-    #"margin-left": "30rem",
-    #"margin-right": "2rem",
-    #"padding": "2rem 1rem",
-    'height': '100%',
-    'width':'80%',
-    'margin':'0 auto'
+    # "margin-left": "30rem",
+    # "margin-right": "2rem",
+    # "padding": "2rem 1rem",
+    'height' : '100%',
+    "width": "80%", 
+    "margin": "0 auto",
 }
 # ---------------------app components-------------------
 city=dbc.Card(
@@ -36,7 +35,8 @@ city=dbc.Card(
                 )
             ])
     ],
-    body=True
+    body=True,
+    className='card'
 )
 neighbourhood=dbc.Card(
     [
@@ -44,13 +44,13 @@ neighbourhood=dbc.Card(
             dbc.Label('Neighbourhood'),
             dcc.Dropdown(
                 id='neighbourhood',
-                value='Downtown',
-                placeholder = 'Select a neighbourhood'
+                #value='Downtown' not everycity has a downtoen, callback needed here
             )
         ])
     ],
     body=True,
-    style={'width' : '350px'}
+    #style={'width' : '350px'}
+    className='card'
 )
 price_slider=dbc.Card([
     dbc.CardHeader("Price Range($)",
@@ -58,9 +58,9 @@ price_slider=dbc.Card([
                           'background':'rgba(0,0,0,0)'}),
     dbc.CardBody([
         dcc.RangeSlider(id='price',
-                        min=default_price_min,
-                        max=default_price_max,
-                        value=[default_price_min, default_price_max],
+                        min=default_price_min+15,
+                        max=default_price_max+15,
+                        value=[default_price_min+15, default_price_max+15],
                         #marks={default_price_min: f'${default_price_min}', default_price_max: f'${default_price_max}'},
                         marks=None,
                         tooltip={
@@ -70,7 +70,12 @@ price_slider=dbc.Card([
                         }
                         )
     ])
-])
+],
+    className='card ',
+    style={
+            'width': '950px'}
+)
+
 number=dbc.Card(
     dbc.CardBody([
         html.H1("Number of Listings", className='card-title'),
@@ -83,27 +88,21 @@ number=dbc.Card(
                     'color' : 'grey'
                 })
     ]),
-    color='primary',
-    style={"height": "270px", "width": "500px"},
+    className='card'
 )
 listing_map=dbc.Card([
-                    dbc.CardHeader("Listings Across Canada :maple_leaf:"),
-                    dbc.CardBody([
-                        # html.Iframe(id='listing_map',
-                        #             srcDoc=map_example.to_html(),
-                        #             style={'border_width' : '0', 'width' : '100%', 'height' : '100%'})
-                        dcc.Graph(id='listing_map',
-                                  style={'width': '100%', 'height': '100%'})
-                    ], style={'width': '100%', 'height': '100%'})
+                    dbc.CardHeader("Listings Across Canada 🍁"),
+                    dcc.Graph(id='listing_map', 
+                                  style={'width': '100%', 
+                                         'height': '100%'}
+                            )
                 ],
+                className= 'card map-card',
                 style={
-                    'border-radius' : '2%',
-                    'width': '1650px',
-                    'height': '950px'
-                    #'margin': '0%',
-                    #'padding': '0%'
-                    #'width': '100%', 'height': '100%' size problem here
-                }
+                    'width': '1650px', 
+                #     'height': '950px', 
+                #     'margin':'auto',
+                 }
                 )
 # ---------------------layout-------------------
 layout=dbc.Container(
@@ -120,6 +119,7 @@ layout=dbc.Container(
                 html.Br(),
                 dbc.Row(price_slider)
                 ]),
+            html.Br(), 
             dbc.Col(number)
         ]),
         html.Br(),
@@ -130,14 +130,28 @@ layout=dbc.Container(
     style=CONTENT_STYLE,
     fluid=False
 )
-# ---------------------call back-------------------
+
+
+# ---------------------call back-------------------   
+# decide neighbourhood default value with city
+@callback(
+        Output('neighbourhood', 'value'),
+        [Input('city', 'value')]
+)
+def update_default_neighbourhood(city):
+    neighbourhoods=sorted(listings.loc[listings['city']==city, 'neighbourhood'].unique().tolist())
+    if 'Downtown' in neighbourhoods:
+        return 'Downtown'
+    else:
+        return neighbourhoods[0]
+
 # decide neighbourhood with city
 @callback(
     Output('neighbourhood', 'options'),
     [Input('city', 'value')]
 )
 def update_neighbourhood(city):
-    neighbourhoods=listings.loc[listings['city']==city, 'neighbourhood'].unique().tolist()
+    neighbourhoods=sorted(listings.loc[listings['city']==city, 'neighbourhood'].unique().tolist())
     options=[{'label': neighbourhood, 'value': neighbourhood} for neighbourhood in neighbourhoods]
     return options
 # decide price range according to city and neighbourhood
