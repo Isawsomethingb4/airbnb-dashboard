@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="24e02c68-f777-4450-b719-46854b967751" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Page 2.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/Page 2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stats.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +13,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProblemsViewState">
@@ -62,7 +65,7 @@
       <workItem from="1708485452290" duration="7813000" />
       <workItem from="1708573727975" duration="2903000" />
       <workItem from="1708623444695" duration="2408000" />
-      <workItem from="1708812814264" duration="2704000" />
+      <workItem from="1708812814264" duration="3405000" />
     </task>
     <servers />
   </component>
