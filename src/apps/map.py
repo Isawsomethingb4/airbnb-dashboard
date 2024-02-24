@@ -4,24 +4,24 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
 import plotly.express as px
+import plotly.graph_objects as go
 dash.register_page(__name__, suppress_callback_exceptions=True, path='/')
-
-
 # ---------------------import data-------------------
-listings=pd.read_csv("../data/processed/airbnb_data.csv")
+listings=pd.read_csv("/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/data/processed/airbnb_data.csv")
 CITY=listings['city'].unique().tolist()
 idx_Van_DT=(listings['city']=='Vancouver')&(listings['neighbourhood']=='Downtown')
 default_price_min=listings.loc[idx_Van_DT, 'price'].min()
 default_price_max=listings.loc[idx_Van_DT, 'price'].max()
 default_listing_count=listings.loc[idx_Van_DT, ].shape[0]
-
 # ---------------------content style-------------------
 CONTENT_STYLE = {
-    "margin-left": "30rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
+    #"margin-left": "30rem",
+    #"margin-right": "2rem",
+    #"padding": "2rem 1rem",
+    'height': '100%',
+    'width':'80%',
+    'margin':'0 auto'
 }
-
 # ---------------------app components-------------------
 city=dbc.Card(
     [
@@ -44,7 +44,8 @@ neighbourhood=dbc.Card(
             dbc.Label('Neighbourhood'),
             dcc.Dropdown(
                 id='neighbourhood',
-                value='Downtown'
+                value='Downtown',
+                placeholder = 'Select a neighbourhood'
             )
         ])
     ],
@@ -67,7 +68,6 @@ price_slider=dbc.Card([
                             'placement': 'bottom',
                             'always_visible' : True,
                         }
-                        
                         )
     ])
 ])
@@ -87,25 +87,24 @@ number=dbc.Card(
     style={"height": "270px", "width": "500px"},
 )
 listing_map=dbc.Card([
-                    dbc.CardHeader("Listings Across Canada 🍁"),
+                    dbc.CardHeader("Listings Across Canada :maple_leaf:"),
                     dbc.CardBody([
-                        # html.Iframe(id='listing_map', 
-                        #             srcDoc=map_example.to_html(), 
+                        # html.Iframe(id='listing_map',
+                        #             srcDoc=map_example.to_html(),
                         #             style={'border_width' : '0', 'width' : '100%', 'height' : '100%'})
-                        dcc.Graph(id='listing_map', 
-                                  className="h-100",
+                        dcc.Graph(id='listing_map',
                                   style={'width': '100%', 'height': '100%'})
                     ], style={'width': '100%', 'height': '100%'})
                 ],
                 style={
                     'border-radius' : '2%',
-                    'width': '1650px', 
-                    'height': '950px', 
-                    # 'margin':'auto'
+                    'width': '1650px',
+                    'height': '950px'
+                    #'margin': '0%',
+                    #'padding': '0%'
                     #'width': '100%', 'height': '100%' size problem here
                 }
                 )
-
 # ---------------------layout-------------------
 layout=dbc.Container(
     children=[
@@ -131,9 +130,7 @@ layout=dbc.Container(
     style=CONTENT_STYLE,
     fluid=False
 )
-
-
-# ---------------------call back-------------------   
+# ---------------------call back-------------------
 # decide neighbourhood with city
 @callback(
     Output('neighbourhood', 'options'),
@@ -143,7 +140,6 @@ def update_neighbourhood(city):
     neighbourhoods=listings.loc[listings['city']==city, 'neighbourhood'].unique().tolist()
     options=[{'label': neighbourhood, 'value': neighbourhood} for neighbourhood in neighbourhoods]
     return options
-
 # decide price range according to city and neighbourhood
 @callback(
     [Output('price', 'min'),
@@ -160,9 +156,8 @@ def update_price_range(city, neighbourhood):
     price=listings.loc[idx, 'price']
     min_price=price.min()
     max_price=price.max()
-    range=[min_price, max_price]
-    return min_price, max_price, range 
-
+    range=[min_price, max_price + 15]
+    return min_price, max_price + 15, range
 # display listing count according to city and neighbourhood
 @callback(
     Output('listing_count', 'children'),
@@ -174,11 +169,9 @@ def update_listing_count(city, neighbourhood, price_range):
     if neighbourhood!=None:
         idx=(listings['city']==city)&(listings['neighbourhood']==neighbourhood)&(listings['price'].between(price_range[0], price_range[1]))
     else:
-        idx=idx=(listings['city']==city)&(listings['price'].between(price_range[0], price_range[1]))
+        idx(listings['city']==city)&(listings['price'].between(price_range[0], price_range[1]))
     count=listings.loc[idx, ].shape[0]
     return count
-
-
 # the map plot
 @callback(
     Output('listing_map', 'figure'),
@@ -186,25 +179,41 @@ def update_listing_count(city, neighbourhood, price_range):
      Input('neighbourhood', 'value'),
      Input('price', 'value')]
 )
-def plot_map(city, neighbourhood, price_range):
-    if neighbourhood!=None:
-        idx=(listings['city']==city)&(listings['neighbourhood']==neighbourhood)&(listings['price'].between(price_range[0], price_range[1]))
-        zoom_size=14
+def update_map(city, neighbourhood, price_range):
+    # Filter the listings based on selected values
+    unique_neighbourhoods = listings.loc[listings['city'] == city, 'neighbourhood'].unique()
+    if neighbourhood is not None and neighbourhood in unique_neighbourhoods:
+        idx = (listings['city'] == city) & (listings['neighbourhood'] == neighbourhood) & (listings['price'].between(price_range[0], price_range[1]))
+        zoom_size = 14
     else:
-        idx=(listings['city']==city)&(listings['price'].between(price_range[0], price_range[1]))
-        zoom_size=12
-    map_data=listings.loc[idx, ['latitude', 'longitude']]
-    center_lat=map_data['latitude'].mean()
-    center_lon=map_data['longitude'].mean()
-    fig=px.scatter_mapbox(
-        data_frame=None,
+        idx = (listings['city'] == city) & (listings['price'].between(price_range[0], price_range[1]))
+        zoom_size = 12
+    map_data = listings.loc[idx, ['latitude', 'longitude', 'name', 'price', 'host_name', 'host url', 'url']]
+    map_data.dropna(inplace=True)
+    center_lat = map_data['latitude'].mean()
+    center_lon = map_data['longitude'].mean()
+    # Create a new scatter_mapbox figure
+    fig = go.Figure(go.Scattermapbox(
         lat=map_data['latitude'],
         lon=map_data['longitude'],
-        zoom=zoom_size,
-        center=dict(lat=center_lat, lon=center_lon)
-    )
+        mode='markers',
+        marker=go.scattermapbox.Marker(
+            size=8,
+            cmin = price_range[0],
+            cmax = price_range[1],
+            color = map_data['price'],
+            colorscale = [[0, 'blue'], [1, 'red']],
+            colorbar = dict(title='Price')
+        ),
+        text=[f'{name}<br>Price: ${price}<br>By: <a href="{host_url}" target="_blank">{host_name}</a><br><a href="{url}" target="_blank">Visit Link</a>' for name, url, host_name, host_url, price in zip(map_data['name'], map_data['url'], map_data['host_name'], map_data['host url'], map_data['price'])],
+        hoverinfo='text'
+    ))
+    # Update layout properties
     fig.update_layout(
-        mapbox_style='open-street-map',
-        margin={"r":0,"t":0,"l":0,"b":0}  # Set margins
+        mapbox=dict(
+            style="open-street-map",
+            center=dict(lat=center_lat, lon=center_lon),
+            zoom=zoom_size
+        )
     )
     return fig

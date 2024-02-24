@@ -2,12 +2,10 @@ import dash
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 import os
-
-
 # --------------------------------APP-------------------------
 # pages_folder = os.getcwd() + '/apps'
 # app=Dash(__name__, use_pages=True, pages_folder=pages_folder, external_stylesheets=[dbc.themes.JOURNAL])
-app=Dash(__name__, suppress_callback_exceptions=True, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
+app=Dash(__name__, suppress_callback_exceptions=True, use_pages=True, pages_folder='/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/src/apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
@@ -15,11 +13,10 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "28rem",
+    "width": "20%",
     "padding": "2rem 2rem",
-    "background-color": "#f8f9fa",  
+    "background-color": "#F8F9FA",
 }
-
 sidebar = html.Div(
     [
         html.H2("Sidebar", className="display-4"),
@@ -43,7 +40,6 @@ sidebar = html.Div(
     ],
     style=SIDEBAR_STYLE,
 )
-
 app.layout=html.Div([
     sidebar,
     html.Div([
@@ -51,7 +47,5 @@ app.layout=html.Div([
         ],
         className='content')
     ])
-
-
 if __name__ == "__main__":
-    app.run_server(port=8050,debug=True)
+    app.run_server(port=8081,debug=True)
