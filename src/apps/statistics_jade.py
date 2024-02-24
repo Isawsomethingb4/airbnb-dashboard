@@ -3,7 +3,7 @@ from dash import Dash, dcc, html, Input, Output, callback
 import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
-dash.register_page(__name__, path='/statistics')
+# dash.register_page(__name__, path='/statistics')
 
 
 # # ---------------------import data-------------------
@@ -92,11 +92,11 @@ dash.register_page(__name__, path='/statistics')
 #     style=CONTENT_STYLE,
 #     fluid=True
 # )
-layout=dbc.Container(
-    children=[
-        html.H1("welcome")
-    ]
-)
+# layout=dbc.Container(
+#     children=[
+#         html.H1("welcome")
+#     ]
+# )
 
 # # ---------------------call back-------------------   
 # # decide neighbourhood with city
