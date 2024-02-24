@@ -32,11 +32,16 @@ chk_roomtype = dbc.Checklist(
     value=roomtypes
 )
 
-slider_rating = dcc.RangeSlider(
+slider_rating =dbc.Card([
+    dbc.CardHeader("Rating Range ⭐",
+                   style={'font-size':'18px',
+                          'background':'rgba(0,0,0,0)'}),
+    dbc.CardBody(
+    dcc.RangeSlider(
     id='rating_silder',
     min=0,
     max=airbnb_data['rating'].max()
-)
+))],style={"height":"100px","width":"100%"})
 # Plots
 
 # Layout
@@ -111,7 +116,7 @@ def update_violin_plot(choice):
     vp = alt.Chart(rating_df).transform_density("price", as_=["price", "density"], extent=[0, 1000],
                                                 groupby=["room_type"]).mark_area(
         orient='horizontal').encode(
-        alt.X('density:Q', title='Room Type', axis=alt.Axis(titleFontSize=15, labelFontSize=13))
+        alt.X('density:Q')
         .stack('center')
         .impute(None)
         .title(None)
@@ -120,7 +125,7 @@ def update_violin_plot(choice):
         alt.Color('room_type:N'),
         alt.Column('room_type:N')
         .spacing(0)
-        .header(titleOrient='bottom', labelOrient='bottom', labelPadding=0),
+        .header(titleOrient='bottom', labelOrient='bottom', labelPadding=0,titleFontSize=15,labelFontSize=13,title='Room Type'),
         tooltip="price"
     ).properties(
         height=300,

@@ -21,22 +21,34 @@ df = pd.read_csv("../data/processed/airbnb_data.csv")
 # Scatter plot
 alt.data_transformers.enable('default', max_rows=None)
 
-slider_review = dcc.RangeSlider(
-    id='reviews_silder',
-    min=0,
-    max=df['number_of_reviews'].max()
-)
+# slider_review = dcc.RangeSlider(
+#     id='reviews_silder',
+#     min=0,
+#     max=df['number_of_reviews'].max()
+# )
 
+
+slider_review =dbc.Card([
+    dbc.CardHeader("Reviews Range 👀",
+                   style={'font-size':'18px',
+                          'background':'rgba(0,0,0,0)'}),
+    dbc.CardBody(
+    dcc.RangeSlider(
+        id='reviews_silder',
+        min=0,
+        max=df['number_of_reviews'].max()
+))],style={"height":"100px","width":"150%"})
+# ---------------------layout-------------------
 layout = dbc.Container(
     children=[
         html.H1("Welcome to Airbnb Dashboard"),
         html.P("This is some introductory text about this map tab"),
         html.Hr(),
         # badge,
-
+        html.H3('1. Rating vs Average Price'),
         html.Div([
             slider_review
-        ], style={'width': '50%'}),
+        ], style={'width': '30%'}),
         html.Div([
             html.Iframe(id='scatter', width='950', height='600')
         ]),
@@ -53,16 +65,17 @@ layout = dbc.Container(
     Output('scatter', 'srcDoc'),
     [Input('reviews_silder', 'value')]
 )
-def update_circle_plot(reviews):
+def update_price_rate_scatter(reviews):
     if reviews == None:
         min_value = df.number_of_reviews.min()
         max_value = df.number_of_reviews.max()
     else:
         min_value, max_value = reviews
     df_new = df[(df.number_of_reviews >= min_value) & (df.number_of_reviews <= max_value)]
-    scatter=alt.Chart(df_new).mark_point(filled=False,clip=True).encode(y=alt.Y("mean(price)",scale=alt.Scale(domain=[0,600])),x=alt.X("rating:Q",scale=alt.Scale(zero=False))).properties(
-        width=700,
-        height=450
-    )
-
+    scatter=alt.Chart(df_new).mark_point(filled=False,clip=True).encode(y=alt.Y("mean(price)",title="Average price",axis=alt.Axis(titleFontSize=15,labelFontSize=13),scale=alt.Scale(domain=[0,600])),x=alt.X("rating:Q",title="Rating",axis=alt.Axis(titleFontSize=15,labelFontSize=13),scale=alt.Scale(zero=False)), color=alt.Color("mean(number_of_reviews)",scale=alt.Scale(scheme='cividis',reverse=True)), tooltip = ["mean(price)", "rating", "mean(number_of_reviews)"]).properties(width=700,height=450)
+    # , tooltip = ["mean(price)", "rating", "number_of_reviews"]
+    #                                                                     , color=alt.Color("mean(number_of_reviews)",
+    #                                                                                       scale=alt.Scale(
+    #                                                                                           scheme='cividis',
+    #                                                                                           reverse=True)
     return scatter.to_html()
