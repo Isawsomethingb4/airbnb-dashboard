@@ -61,9 +61,9 @@ price_slider=dbc.Card([
                           'background':'rgba(0,0,0,0)'}),
     dbc.CardBody([
         dcc.RangeSlider(id='price',
-                        min=default_price_min,
-                        max=default_price_max,
-                        value=[default_price_min, default_price_max],
+                        min=default_price_min+15,
+                        max=default_price_max+15,
+                        value=[default_price_min+15, default_price_max+15],
                         #marks={default_price_min: f'${default_price_min}', default_price_max: f'${default_price_max}'},
                         marks=None,
                         tooltip={
