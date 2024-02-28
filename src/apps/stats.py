@@ -148,12 +148,12 @@ def update_violin_plot(choice):
     Output('scatter-plot', 'srcDoc'),
     [Input('dropdown-roomtype', 'value')]
 )
-def line_plot(value):
+def scatter_plot(value):
     data = airbnb_data[airbnb_data['room_type'] == value]
     
     rating_vs_no_of_reviews = alt.Chart(data).mark_circle(opacity=0.5).encode(
-        x = alt.X('rating', scale=alt.Scale(domain=[3.6, 5.0])),
-        y = alt.Y('number_of_reviews'),
+        x = alt.X('rating', scale=alt.Scale(domain=[3.6, 5.0]), title= 'Rating', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
+        y = alt.Y('number_of_reviews', title = 'Number of Reviews', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
         tooltip='name'
     ).properties(
         width=700,
