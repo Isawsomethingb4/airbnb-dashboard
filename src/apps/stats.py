@@ -9,14 +9,13 @@ dash.register_page(__name__, path='/statistics')
 # Import dataset
 
 airbnb_data = pd.read_csv("../data/processed/airbnb_data.csv")
-# airbnb_data = pd.read_csv("/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/data/processed/airbnb_data.csv")
 alt.data_transformers.enable('default', max_rows=None)
 airbnb_data['rating'] = pd.to_numeric(airbnb_data['rating'])
 roomtypes = airbnb_data['room_type'].unique().tolist()
 # Content Style
 
 CONTENT_STYLE = {
-    "margin-left": "30rem",
+    "margin-left": "20rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
@@ -38,14 +37,19 @@ slider_rating = dcc.RangeSlider(
     min=0,
     max=airbnb_data['rating'].max()
 )
-# Plots
+
+dropdown_roomtype = dbc.Select(
+    id='dropdown-roomtype',
+    options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
+    value=roomtypes[0]
+)
 
 # Layout
 
 layout = dbc.Container(
     children=[
         html.H1('Welcome to Airbnb Dashboard'),
-        html.P('This is some introductory text about this statistics tab'),
+        html.P('You can view the trends of Prices, Ratings etc. across different cities and room types.'),
         html.Hr(),
         html.H3('1. Room Type vs Price Comparison'),
         html.Div([
@@ -60,7 +64,16 @@ layout = dbc.Container(
             html.Iframe(
                 id='line-plot', width='900', height='600'
             )
-        ])
+        ]),
+        html.H3('3. Rating vs Number of Reviews Comparison'),
+        html.Div([
+            dropdown_roomtype
+        ], style = {'width': '20%'}),
+        html.Div([
+            html.Iframe(
+                id='scatter-plot', width='900', height='600'
+            )
+        ]),
     ],
     style=CONTENT_STYLE,
     fluid=True
@@ -130,3 +143,20 @@ def update_violin_plot(choice):
         stroke=None
     )
     return vp.to_html()
+
+@callback(
+    Output('scatter-plot', 'srcDoc'),
+    [Input('dropdown-roomtype', 'value')]
+)
+def line_plot(value):
+    data = airbnb_data[airbnb_data['room_type'] == value]
+    
+    rating_vs_no_of_reviews = alt.Chart(data).mark_circle(opacity=0.5).encode(
+        x = alt.X('rating', scale=alt.Scale(domain=[3.6, 5.0])),
+        y = alt.Y('number_of_reviews'),
+        tooltip='name'
+    ).properties(
+        width=700,
+        height=450
+    ).interactive()    
+    return rating_vs_no_of_reviews.to_html()
