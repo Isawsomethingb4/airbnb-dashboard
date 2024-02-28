@@ -48,7 +48,7 @@ dropdown_roomtype = dbc.Select(
 
 layout = dbc.Container(
     children=[
-        html.H1('Welcome to Airbnb Dashboard'),
+        html.H1('Welcome to Statistics!'),
         html.P('You can view the trends of Prices, Ratings etc. across different cities and room types.'),
         html.Hr(),
         html.H3('1. Room Type vs Price Comparison'),
@@ -58,7 +58,7 @@ layout = dbc.Container(
         html.Div([
             html.Iframe(id='vp', width='950', height='400')
         ]),
-        html.H3('2. City vs Rating Comparison'),
+        html.H3('2. City vs Average Price Comparison'),
         chk_roomtype,
         html.Div([
             html.Iframe(
@@ -90,7 +90,10 @@ def line_plot(value=roomtypes):
     data = airbnb_data[airbnb_data['room_type'].isin(value)]
     line_city_vs_price_base = alt.Chart(data).encode(
         y=alt.Y('mean(price)', title='Average Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13, format='$s'), scale=alt.Scale(zero=False)),
-        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13))
+        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+        tooltip= alt.Tooltip(
+            'mean(price)', format='$,.2f'
+        )
     )
 
     line_city_vs_price = line_city_vs_price_base.mark_point(size=10) + line_city_vs_price_base.mark_line().properties(
@@ -154,7 +157,11 @@ def scatter_plot(value):
     rating_vs_no_of_reviews = alt.Chart(data).mark_circle(opacity=0.5).encode(
         x = alt.X('rating', scale=alt.Scale(domain=[3.6, 5.0]), title= 'Rating', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
         y = alt.Y('number_of_reviews', title = 'Number of Reviews', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
-        tooltip='name'
+        tooltip= [
+            alt.Tooltip('name', title='Listing'),
+            alt.Tooltip('rating', title='Rating'),
+            alt.Tooltip('number_of_reviews', title='Number of Reviews')
+        ]
     ).properties(
         width=700,
         height=450
