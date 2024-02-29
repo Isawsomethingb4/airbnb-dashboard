@@ -2,8 +2,10 @@ import dash
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 import os
-
-
+# import pathlib
+# PATH = pathlib.Path(__file__).parent
+# DATA_PATH = PATH.joinpath("data").resolve()
+# df = pd.read_csv(DATA_PATH.joinpath(data_file))
 # --------------------------------APP-------------------------
 pages_folder = os.getcwd() + '/apps'
 app=Dash(__name__, use_pages=True, pages_folder=pages_folder, external_stylesheets=[dbc.themes.JOURNAL])
@@ -54,4 +56,4 @@ app.layout=html.Div([
 
 
 if __name__ == "__main__":
-    app.run_server(port=8050,debug=True)
+    app.run_server(port=8051,debug=True)
