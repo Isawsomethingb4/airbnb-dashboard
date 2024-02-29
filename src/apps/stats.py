@@ -16,7 +16,7 @@ roomtypes = airbnb_data['room_type'].unique().tolist()
 # Content Style
 
 CONTENT_STYLE = {
-    "margin-left": "30rem",
+    "margin-left": "20rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
@@ -42,7 +42,7 @@ slider_rating =dbc.Card([
     id='rating_silder',
     min=0,
     max=airbnb_data['rating'].max()
-))],style={"height":"100px","width":"100%"})
+))],style={"height":"100px","width":"850px"})
 
 slider_review = dbc.Card([
     dbc.CardHeader("Reviews Range 👀",
@@ -53,7 +53,7 @@ slider_review = dbc.Card([
             id='reviews_silder',
             min=0,
             max=airbnb_data['number_of_reviews'].max()
-        ))], style={"height": "100px", "width": "150%"})
+        ))], style={"height": "100px", "width": "850px"})
 
 # Plots
 click = alt.selection_point(fields=['city'], bind='legend')
@@ -72,6 +72,11 @@ int1 = alt.Chart(airbnb_data
 ).add_params(
   brush
 )
+
+dropdown_roomtype = dbc.Select(
+    id='dropdown-roomtype',
+    options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
+    value=roomtypes[0])
 
 int2 = alt.Chart(airbnb_data).mark_point(filled=False,clip=True).encode(y=alt.Y("mean(price)",scale=alt.Scale(domain=[0,600])),x=alt.X("minimum_nights:Q",scale=alt.Scale(domain=[0,90],zero=False)),
   color=alt.condition(
@@ -93,8 +98,8 @@ chart=int1.properties(height=450,width=400)| (int2 & bars).add_params(click)
 # Layout
 layout = dbc.Container(
     children=[
-        html.H1('Welcome to Airbnb Dashboard'),
-        html.P('This is some introductory text about this statistics tab'),
+        html.H1('Welcome to Statistics!'),
+        html.P('You can view the trends of Prices, Ratings etc. across different cities and room types.'),
         html.Hr(),
         html.H3('1. Room Type vs Price Comparison'),
         html.Div([
@@ -103,8 +108,7 @@ layout = dbc.Container(
         html.Div([
             html.Iframe(id='vp', width='950', height='400')
         ]),
-
-        html.H3('2. City vs Rating Comparison'),
+        html.H3('2. City vs Average Price Comparison'),
         chk_roomtype,
         html.Div([
             html.Iframe(
@@ -122,8 +126,17 @@ layout = dbc.Container(
         dvc.Vega(
             id="altair-chart",
             opt={"renderer": "svg", "actions": False},
-            spec=chart.to_dict(),
-        )
+            spec=chart.to_dict() ),
+
+        html.H3('4. Rating vs Number of Reviews Comparison'),
+        html.Div([
+            dropdown_roomtype
+        ], style = {'width': '20%'}),
+        html.Div([
+            html.Iframe(
+                id='scatter-plot', width='900', height='600'
+            )
+        ])
 
     ],
     style=CONTENT_STYLE,
@@ -141,7 +154,10 @@ def line_plot(value=roomtypes):
     data = airbnb_data[airbnb_data['room_type'].isin(value)]
     line_city_vs_price_base = alt.Chart(data).encode(
         y=alt.Y('mean(price)', title='Average Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13, format='$s'), scale=alt.Scale(zero=False)),
-        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13))
+        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+        tooltip= alt.Tooltip(
+            'mean(price)', format='$,.2f'
+        )
     )
 
     line_city_vs_price = line_city_vs_price_base.mark_point(size=10) + line_city_vs_price_base.mark_line().properties(
@@ -195,7 +211,6 @@ def update_violin_plot(choice):
     )
     return vp.to_html()
 
-
 @callback(
     Output('scatter', 'srcDoc'),
     [Input('reviews_silder', 'value')]
@@ -215,3 +230,25 @@ def update_price_rate_scatter(reviews):
         color=alt.Color("mean(number_of_reviews)", scale=alt.Scale(scheme='cividis', reverse=True)),
         tooltip=["mean(price)", "rating", "mean(number_of_reviews)"]).properties(width=700, height=450)
     return scatter.to_html()
+
+@callback(
+    Output('scatter-plot', 'srcDoc'),
+    [Input('dropdown-roomtype', 'value')]
+)
+def scatter_plot(value):
+    data = airbnb_data[airbnb_data['room_type'] == value]
+    
+    rating_vs_no_of_reviews = alt.Chart(data).mark_circle(opacity=0.5).encode(
+        x = alt.X('rating', scale=alt.Scale(domain=[3.6, 5.0]), title= 'Rating', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
+        y = alt.Y('number_of_reviews', title = 'Number of Reviews', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
+        tooltip= [
+            alt.Tooltip('name', title='Listing'),
+            alt.Tooltip('rating', title='Rating'),
+            alt.Tooltip('number_of_reviews', title='Number of Reviews')
+        ]
+    ).properties(
+        width=700,
+        height=450
+    ).interactive()    
+    return rating_vs_no_of_reviews.to_html()
+
