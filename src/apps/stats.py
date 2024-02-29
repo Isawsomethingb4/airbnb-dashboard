@@ -1,6 +1,7 @@
 import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
+import dash_vega_components as dvc
 import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
@@ -32,20 +33,69 @@ chk_roomtype = dbc.Checklist(
     value=roomtypes
 )
 
-slider_rating = dcc.RangeSlider(
+slider_rating =dbc.Card([
+    dbc.CardHeader("Rating Range ⭐",
+                   style={'font-size':'18px',
+                          'background':'rgba(0,0,0,0)'}),
+    dbc.CardBody(
+    dcc.RangeSlider(
     id='rating_silder',
     min=0,
     max=airbnb_data['rating'].max()
+))],style={"height":"100px","width":"850px"})
+
+slider_review = dbc.Card([
+    dbc.CardHeader("Reviews Range 👀",
+                   style={'font-size': '18px',
+                          'background': 'rgba(0,0,0,0)'}),
+    dbc.CardBody(
+        dcc.RangeSlider(
+            id='reviews_silder',
+            min=0,
+            max=airbnb_data['number_of_reviews'].max()
+        ))], style={"height": "100px", "width": "850px"})
+
+# Plots
+click = alt.selection_point(fields=['city'], bind='legend')
+brush = alt.selection_interval()
+int1 = alt.Chart(airbnb_data
+).mark_rect().encode(
+  x="city",
+  y="room_type",
+  color=alt.condition(
+    brush,
+    'count()',
+    alt.value('lightgray'))
+  ).properties(
+    width=180,
+    height=180
+).add_params(
+  brush
 )
 
 dropdown_roomtype = dbc.Select(
     id='dropdown-roomtype',
     options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
-    value=roomtypes[0]
+    value=roomtypes[0])
+
+int2 = alt.Chart(airbnb_data).mark_point(filled=False,clip=True).encode(y=alt.Y("mean(price)",scale=alt.Scale(domain=[0,600])),x=alt.X("minimum_nights:Q",scale=alt.Scale(domain=[0,90],zero=False)),
+  color=alt.condition(
+    brush, # condition
+    'room_type',  # if True
+    alt.value('lightgray') # if False
+  ),tooltip=["mean(rating)","city"]).add_params(
+  brush
 )
 
-# Layout
+bars = (alt.Chart(airbnb_data).mark_bar().encode(
+    x='count()',
+    y='city',
+    # color='city',
+    opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
+   .transform_filter(brush))
 
+chart=int1.properties(height=450,width=400)| (int2 & bars).add_params(click)
+# Layout
 layout = dbc.Container(
     children=[
         html.H1('Welcome to Statistics!'),
@@ -65,7 +115,20 @@ layout = dbc.Container(
                 id='line-plot', width='900', height='600'
             )
         ]),
-        html.H3('3. Rating vs Number of Reviews Comparison'),
+        html.H3('3. Rating vs Average Price'),
+        html.Div([
+            slider_review
+        ], style={'width': '30%'}),
+        html.Div([
+            html.Iframe(id='scatter', width='1000', height='600')
+        ]),
+        html.H3('4. Minimum_night vs Average Price'),
+        dvc.Vega(
+            id="altair-chart",
+            opt={"renderer": "svg", "actions": False},
+            spec=chart.to_dict() ),
+
+        html.H3('4. Rating vs Number of Reviews Comparison'),
         html.Div([
             dropdown_roomtype
         ], style = {'width': '20%'}),
@@ -73,7 +136,8 @@ layout = dbc.Container(
             html.Iframe(
                 id='scatter-plot', width='900', height='600'
             )
-        ]),
+        ])
+
     ],
     style=CONTENT_STYLE,
     fluid=True
@@ -128,7 +192,7 @@ def update_violin_plot(choice):
     vp = alt.Chart(rating_df).transform_density("price", as_=["price", "density"], extent=[0, 1000],
                                                 groupby=["room_type"]).mark_area(
         orient='horizontal').encode(
-        alt.X('density:Q', title='Room Type', axis=alt.Axis(titleFontSize=15, labelFontSize=13))
+        alt.X('density:Q')
         .stack('center')
         .impute(None)
         .title(None)
@@ -137,7 +201,7 @@ def update_violin_plot(choice):
         alt.Color('room_type:N'),
         alt.Column('room_type:N')
         .spacing(0)
-        .header(titleOrient='bottom', labelOrient='bottom', labelPadding=0),
+        .header(titleOrient='bottom', labelOrient='bottom', labelPadding=0,titleFontSize=15,labelFontSize=13,title='Room Type'),
         tooltip="price"
     ).properties(
         height=300,
@@ -146,6 +210,26 @@ def update_violin_plot(choice):
         stroke=None
     )
     return vp.to_html()
+
+@callback(
+    Output('scatter', 'srcDoc'),
+    [Input('reviews_silder', 'value')]
+)
+def update_price_rate_scatter(reviews):
+    if reviews == None:
+        min_value = airbnb_data.number_of_reviews.min()
+        max_value = airbnb_data.number_of_reviews.max()
+    else:
+        min_value, max_value = reviews
+    df_new = airbnb_data[(airbnb_data.number_of_reviews >= min_value) & (airbnb_data.number_of_reviews <= max_value)]
+    scatter = alt.Chart(df_new).mark_point(filled=False, clip=True).encode(
+        y=alt.Y("mean(price)", title="Average price", axis=alt.Axis(titleFontSize=15, labelFontSize=13),
+                scale=alt.Scale(domain=[0, 600])),
+        x=alt.X("rating:Q", title="Rating", axis=alt.Axis(titleFontSize=15, labelFontSize=13),
+                scale=alt.Scale(zero=False)),
+        color=alt.Color("mean(number_of_reviews)", scale=alt.Scale(scheme='cividis', reverse=True)),
+        tooltip=["mean(price)", "rating", "mean(number_of_reviews)"]).properties(width=700, height=450)
+    return scatter.to_html()
 
 @callback(
     Output('scatter-plot', 'srcDoc'),
@@ -167,3 +251,4 @@ def scatter_plot(value):
         height=450
     ).interactive()    
     return rating_vs_no_of_reviews.to_html()
+

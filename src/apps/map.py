@@ -184,7 +184,7 @@ def update_listing_count(city, neighbourhood, price_range):
     if neighbourhood!=None:
         idx=(listings['city']==city)&(listings['neighbourhood']==neighbourhood)&(listings['price'].between(price_range[0], price_range[1]))
     else:
-        idx(listings['city']==city)&(listings['price'].between(price_range[0], price_range[1]))
+        idx=(listings['city']==city)&(listings['price'].between(price_range[0], price_range[1]))
     count=listings.loc[idx, ].shape[0]
     return count
 # the map plot
