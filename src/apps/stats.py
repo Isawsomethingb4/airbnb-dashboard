@@ -114,7 +114,7 @@ layout = dbc.Container(
         chk_roomtype,
         html.Div([
             html.Iframe(
-                id='line-plot', width='900', height='600'
+                id='line-plot', width='400', height='400'
             )
         ]),
         html.H3('3. Rating vs Average Price'),
@@ -155,15 +155,12 @@ def line_plot(value=roomtypes):
     data = airbnb_data[airbnb_data['room_type'].isin(value)]
     line_city_vs_price_base = alt.Chart(data).encode(
         y=alt.Y('mean(price)', title='Average Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13), scale=alt.Scale(zero=False)),
-        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-        tooltip= alt.Tooltip(
-            'mean(price)', format='$,.2f'
-        )
+        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13))
     )
 
     line_city_vs_price = line_city_vs_price_base.mark_point(size=10) + line_city_vs_price_base.mark_line().properties(
-        width=700,
-        height=450
+        width=400,
+        height=200
     )
     
     return line_city_vs_price.to_html()
