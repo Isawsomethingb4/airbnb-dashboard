@@ -154,7 +154,7 @@ layout = dbc.Container(
 def line_plot(value=roomtypes):
     data = airbnb_data[airbnb_data['room_type'].isin(value)]
     line_city_vs_price_base = alt.Chart(data).encode(
-        y=alt.Y('mean(price)', title='Average Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13, format='$s'), scale=alt.Scale(zero=False)),
+        y=alt.Y('mean(price)', title='Average Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13), scale=alt.Scale(zero=False)),
         x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
         tooltip= alt.Tooltip(
             'mean(price)', format='$,.2f'
