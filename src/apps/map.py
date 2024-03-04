@@ -108,8 +108,8 @@ listing_map=dbc.Card([
 # ---------------------layout-------------------
 layout=dbc.Container(
     children=[
-        html.H1("Welcome to Airbnb Dashboard"),
-        html.P("This is some introductory text about this map tab"),
+        html.H1("Listing Map", style={"textAlign": "center"}),
+        html.P("Explore Airbnb listings geographically and gain valuable insights at a glance.", style={"textAlign": "center"}),
         html.Hr(),
         dbc.Row([
             dbc.Col([

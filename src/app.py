@@ -19,10 +19,11 @@ SIDEBAR_STYLE = {
 }
 sidebar = html.Div(
     [
-        html.H2("Sidebar", className="display-4"),
+        # html.H2("StaySpot Analytics", className="display-4"),
+        html.Img(src='/assets/Logo.png', style={"width": "100%"}),
         html.Hr(),
         html.P(
-            "A simple sidebar layout with navigation links", className="lead"
+            "StaySpot Analytics is your comprehensive dashboard for unlocking valuable insights into Airbnb data.", className="lead"
         ),
         html.Hr(),
         dbc.Nav(
@@ -30,8 +31,6 @@ sidebar = html.Div(
                 dbc.NavLink("Map", href="/", active="exact"),
                 html.Br(),
                 dbc.NavLink("Statistics", href="/statistics", active="exact"),
-                html.Br(),
-                dbc.NavLink("Page 2", href="/page-2", active="exact"),
             ],
             vertical=True,
             pills=True,

@@ -16,7 +16,7 @@ roomtypes = airbnb_data['room_type'].unique().tolist()
 # Content Style
 
 CONTENT_STYLE = {
-    "margin-left": "20rem",
+    "margin-left": "20%",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
@@ -95,11 +95,12 @@ bars = (alt.Chart(airbnb_data).mark_bar().encode(
    .transform_filter(brush))
 
 chart=int1.properties(height=450,width=350)| (int2 & bars).add_params(click)
+
 # Layout
 layout = dbc.Container(
     children=[
-        html.H1('Welcome to Statistics!'),
-        html.P('You can view the trends of Prices, Ratings etc. across different cities and room types.'),
+        html.H1('Statistical Insights', style={"textAlign": "center"}),
+        html.P('View the trends of Prices, Ratings etc. across different cities and room types.', style={"textAlign": "center"}),
         html.Hr(),
         html.H3('1. Room Type vs Price Comparison'),
         html.Div([
