@@ -2,6 +2,7 @@ import dash
 from dash import Dash, dcc, html, Input, Output, callback
 import dash_bootstrap_components as dbc
 import pandas as pd
+import altair as alt
 import plotly.express as px
 import plotly.graph_objects as go
 dash.register_page(__name__, suppress_callback_exceptions=True, path='/')
