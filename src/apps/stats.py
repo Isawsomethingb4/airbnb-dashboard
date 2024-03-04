@@ -190,16 +190,10 @@ def update_violin_plot(choice):
     vp = alt.Chart(rating_df).transform_density("price", as_=["price", "density"], extent=[0, 1000],
                                                 groupby=["room_type"]).mark_area(
         orient='horizontal').encode(
-        alt.X('density:Q')
-        .stack('center')
-        .impute(None)
-        .title(None)
-        .axis(labels=False, values=[0], grid=False, ticks=True),
-        alt.Y('price:Q', title='Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13, format='$.3s')),
-        alt.Color('room_type:N'),
-        alt.Column('room_type:N')
-        .spacing(0)
-        .header(titleOrient='bottom', labelOrient='bottom', labelPadding=0,titleFontSize=15,labelFontSize=13,title='Room Type'),
+        x = alt.X('density:Q', stack='center', impute=None, title=None, axis = alt.Axis(labels=False, values=[0], grid=False, ticks=True)),
+        y = alt.Y('price:Q', title='Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
+        color = alt.Color('room_type:N'),
+        column = alt.Column('room_type:N', spacing=0, header= alt.Header(titleOrient='bottom', labelOrient='bottom', labelPadding=0,titleFontSize=15,labelFontSize=13,title='Room Type')),
         tooltip="price"
     ).properties(
         height=300,
