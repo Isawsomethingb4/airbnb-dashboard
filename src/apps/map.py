@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 from dash_table import DataTable
 dash.register_page(__name__, suppress_callback_exceptions=True, path='/')
 # ---------------------import data-------------------
-listings=pd.read_csv("../../data/processed/airbnb_data.csv")
+listings=pd.read_csv("data/processed/airbnb_data.csv")
 # listings=pd.read_csv("/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/data/processed/airbnb_data.csv")
 CITY=listings['city'].unique().tolist()
 idx_Van_DT=(listings['city']=='Vancouver')&(listings['neighbourhood']=='Downtown')

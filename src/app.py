@@ -2,7 +2,6 @@ import dash
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 import os
-
 # --------------------------------APP-------------------------
 #pages_folder = os.getcwd() + '/apps'
 app=Dash(__name__, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
