@@ -24,14 +24,14 @@ sidebar = html.Div(
         html.Img(src='/assets/Logo.png', style={"width": "100%"}),
         html.Hr(),
         html.P(
-            "StaySpot Analytics is your comprehensive dashboard for unlocking valuable insights into Airbnb data.", className="lead"
-        ),
+            "BnB Beacon is your comprehensive dashboard for unlocking valuable insights into Airbnb data.", className="lead"
+        , style={"textAlign": "center"}),
         html.Hr(),
         dbc.Nav(
             [
-                dbc.NavLink("Map", href="/", active="exact"),
+                dbc.NavLink("Map", href="/", active="exact", style={"textAlign": "center"}),
                 html.Br(),
-                dbc.NavLink("Statistics", href="/statistics", active="exact"),
+                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center"}),
             ],
             vertical=True,
             pills=True,
