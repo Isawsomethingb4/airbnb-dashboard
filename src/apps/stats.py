@@ -60,7 +60,7 @@ dropdown_roomtype = dbc.Select(
     options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
     value=roomtypes[0])
 # Plots
-click = alt.selection_point(fields=['city'], bind='legend')
+click = alt.selection_interval(fields=['city'], bind='legend')
 brush = alt.selection_interval()
 int1 = alt.Chart(airbnb_data
 ).mark_rect().encode(
