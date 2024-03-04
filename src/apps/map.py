@@ -20,7 +20,7 @@ CONTENT_STYLE = {
     # "margin-right": "2rem",
     # "padding": "2rem 1rem",
     'height' : '100%',
-    "width": "80%", 
+    "width": "90%", 
     "margin": "0 auto",
 }
 # ---------------------app components-------------------
