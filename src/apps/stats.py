@@ -61,41 +61,41 @@ dropdown_roomtype = dbc.Select(
     value=roomtypes[0])
 # Plots
 #click = alt.selection_interval(fields=['city'], bind='legend')
-click = alt.selection_multi(fields=['city'], bind='legend')
-brush = alt.selection_interval()
-int1 = alt.Chart(airbnb_data
-).mark_rect().encode(
-  x=alt.X("room_type",title="Room Type",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-  y=alt.X("city",title="City",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-  color=alt.condition(
-    brush,
-    'count()',
-    alt.value('lightgray'))
-  ).properties(
-    width=180,
-    height=180
-).add_params(
-  brush
-)
+# click = alt.selection_multi(fields=['city'], bind='legend')
+# brush = alt.selection_interval()
+# int1 = alt.Chart(airbnb_data
+# ).mark_rect().encode(
+#   x=alt.X("room_type",title="Room Type",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+#   y=alt.X("city",title="City",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+#   color=alt.condition(
+#     brush,
+#     'count()',
+#     alt.value('lightgray'))
+#   ).properties(
+#     width=180,
+#     height=180
+# ).add_params(
+#   brush
+# )
 
-int2 = alt.Chart(airbnb_data).mark_point(filled=False,clip=True).encode(
-    y=alt.Y("mean(price)",title="Average Price",scale=alt.Scale(domain=[0,600]),axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-    x=alt.X("minimum_nights:Q",title="Minimum Night",scale=alt.Scale(domain=[0,90],zero=False),axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-    color=alt.condition(
-    brush, # condition
-    'room_type',  # if True
-    alt.value('lightgray') # if False
-  ),tooltip=["mean(rating)","city"]).add_params(
-  brush
-)
+# int2 = alt.Chart(airbnb_data).mark_point(filled=False,clip=True).encode(
+#     y=alt.Y("mean(price)",title="Average Price",scale=alt.Scale(domain=[0,600]),axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+#     x=alt.X("minimum_nights:Q",title="Minimum Night",scale=alt.Scale(domain=[0,90],zero=False),axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+#     color=alt.condition(
+#     brush, # condition
+#     'room_type',  # if True
+#     alt.value('lightgray') # if False
+#   ),tooltip=["mean(rating)","city"]).add_params(
+#   brush
+# )
 
-bars = (alt.Chart(airbnb_data).mark_bar().encode(
-    x=alt.X('count()',title="Count",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-    y=alt.Y('city',title="City",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-    opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-   .transform_filter(brush))
+# bars = (alt.Chart(airbnb_data).mark_bar().encode(
+#     x=alt.X('count()',title="Count",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+#     y=alt.Y('city',title="City",axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+#     opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
+#    .transform_filter(brush))
 
-chart=int1.properties(height=450,width=350)| (int2 & bars).add_params(click)
+# chart=int1.properties(height=450,width=350)| (int2 & bars).add_params(click)
 
 # Layout
 layout = dbc.Container(
@@ -134,10 +134,10 @@ layout = dbc.Container(
             )
         ]),
         html.H3('5. Minimum Night vs Average Price'),
-        dvc.Vega(
-            id="altair-chart",
-            opt={"renderer": "svg", "actions": False},
-            spec=chart.to_dict() )
+        # dvc.Vega(
+        #     id="altair-chart",
+        #     opt={"renderer": "svg", "actions": False},
+        #     spec=chart.to_dict() )
 
     ],
     style=CONTENT_STYLE,
