@@ -30,12 +30,12 @@ hosts_average = hosts_average.iloc[0:5]
 default_hosts = hosts_average[['host_name', 'host url']]
 # ---------------------content style-------------------
 CONTENT_STYLE = {
-    # "margin-left": "30rem",
-    # "margin-right": "2rem",
+    "margin-left": "0%",
+    "margin-right": "0%",
     # "padding": "2rem 1rem",
-    'height' : '100%',
-    "width": "90%", 
-    "margin": "0 auto",
+    # 'height' : '100%',
+    # "width": "90%", 
+    # "margin": "0 auto",
 }
 # ---------------------app components-------------------
 city=dbc.Card(
@@ -55,7 +55,7 @@ city=dbc.Card(
     className='card',
     style={
                     'width': '110%',
-                    'margin-left': '90%' 
+                    # 'margin-left': '90%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
@@ -75,7 +75,7 @@ neighbourhood=dbc.Card(
     className='card',
     style={
                     'width': '115%',
-                    'margin-left': '90%' 
+                    # 'margin-left': '90%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
@@ -102,7 +102,7 @@ price_slider=dbc.Card([
     className='card ',
     style={
                     'width': '100%',
-                    'margin-left': '42%' 
+                    'margin-left': '3%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
@@ -123,7 +123,7 @@ number=dbc.Card(
     className='card',
     style={
                     'width': '100%',
-                    'margin-left': '45%',
+                    'margin-left': '3%',
                     'height': '100%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
@@ -139,7 +139,7 @@ listing_map=dbc.Card([
                 className= 'card map-card',
                 style={
                     'width': '100%',
-                    'margin-left': '13%' 
+                    # 'margin-left': '13%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
@@ -158,7 +158,7 @@ hosts = dbc.Card([
         )
     ])], style={
                     'width': '100%',
-                    'margin-left': '40%',
+                    # 'margin-left': '40%',
                     'height':'100%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
@@ -166,15 +166,9 @@ hosts = dbc.Card([
 # ---------------------layout-------------------
 layout=dbc.Container(
     children=[
-<<<<<<< Updated upstream
         html.H1("Listing Map", style={"textAlign": "center"}),
         html.P("Explore Airbnb listings geographically and gain valuable insights at a glance.", style={"textAlign": "center"}),
         html.Hr(),
-=======
-        html.H1("Welcome to Airbnb Dashboard", style={'margin-left': '40%'}),
-        html.P("This is some introductory text about this map tab", style={'margin-left': '40%'}),
-        html.Hr(style={'margin-left': '15%'}),
->>>>>>> Stashed changes
         dbc.Row([
             dbc.Col([
                 dbc.Row([

@@ -16,8 +16,8 @@ roomtypes = airbnb_data['room_type'].unique().tolist()
 # Content Style
 
 CONTENT_STYLE = {
-    "margin-left": "20%",
-    "margin-right": "2rem",
+    "margin-left": "0%",
+    "margin-right": "0%",
     "padding": "2rem 1rem",
 }
 
