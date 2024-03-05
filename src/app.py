@@ -28,13 +28,13 @@ sidebar = html.Div(
         html.Hr(),
         dbc.Nav(
             [
-                dbc.NavLink("Map", href="/", active="exact", style={"textAlign": "center"}),
+                dbc.NavLink("Map", href="/", active="exact", style={"textAlign": "center", 'fontSize':25}),
                 html.Br(),
-                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center"}),
+                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':25}),
             ],
             vertical=True,
             pills=True,
-            className='navbar-nav'
+            className='navbar-nav',
         ),
     ],
     style=SIDEBAR_STYLE,
