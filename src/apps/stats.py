@@ -161,7 +161,7 @@ def line_plot(value1):
         tooltip= alt.Tooltip('mean(price)', title='Average Price (CAD)')
     )
 
-    line_city_vs_price = line_city_vs_price_base.mark_point(size=10) + line_city_vs_price_base.mark_line().properties(
+    line_city_vs_price = line_city_vs_price_base.mark_point(size=10).properties(
         width=700,
         height=450
     )
