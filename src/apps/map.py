@@ -54,7 +54,7 @@ city=dbc.Card(
     body=True,
     className='card',
     style={
-                    'width': '110%',
+                    'width': '124%',
                     # 'margin-left': '90%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
@@ -74,8 +74,8 @@ neighbourhood=dbc.Card(
     #style={'width' : '350px'}
     className='card',
     style={
-                    'width': '115%',
-                    # 'margin-left': '90%' 
+                    'width': '130%',
+                    'margin-left': '13%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
@@ -83,7 +83,8 @@ neighbourhood=dbc.Card(
 price_slider=dbc.Card([
     dbc.CardHeader("Price Range($)",
                    style={'font-size':'18px',
-                          'background':'rgba(0,0,0,0)'}),
+                          'background':'rgba(0,0,0,0)',
+                          'textAlign':'center'}),
     dbc.CardBody([
         dcc.RangeSlider(id='price',
                         min=default_price_min+15,
@@ -99,31 +100,32 @@ price_slider=dbc.Card([
                         )
     ])
 ],
-    className='card ',
+    className='card',
     style={
-                    'width': '100%',
-                    'margin-left': '3%' 
-                #     'height': '950px', 
+                    'width': '250%',
+                    'margin-left': '9%', 
+                     'height': '100%' 
                 #     'margin':'auto',
                  }
 )
 
 number=dbc.Card(
     dbc.CardBody([
-        html.H1("Number of Listings", className='card-title'),
+        html.H1("Number of Listings", className='card-title', style={'textAlign': 'center'}),
         html.Hr(),
         html.Br(),
         html.H1(str(default_listing_count),
                 id='listing_count',
                 style={
                     'textAlign' : 'center',
-                    'color' : 'grey'
+                    'color' : 'darkorange',
+                    'fontSize': 80
                 })
     ]),
     className='card',
     style={
-                    'width': '100%',
-                    'margin-left': '3%',
+                    'width': '90%',
+                    'margin-left': '15%',
                     'height': '100%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
@@ -272,8 +274,10 @@ def update_table(neighbourhood, city, price_range):
     final_data = hosts_average[['host_name', 'host url']]
     hosts_data = final_data.to_dict('records')
     # Format the host names as clickable links
+    n = 1
     for row in hosts_data:
-        row['host_name'] = f"[{row['host_name']}]({row['host url']})"
+        row['host_name'] = f"{n}. [{row['host_name']}]({row['host url']})"
+        n += 1
     return hosts_data
 
 @callback(
