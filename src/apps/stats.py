@@ -23,6 +23,16 @@ CONTENT_STYLE = {
 
 # App Components
 
+chk_roomtype = dbc.Checklist(
+    id='chk-roomtype',
+    options=[
+        {'label': roomtype, 'value': roomtype} for roomtype in roomtypes
+    ],
+    inline=True,
+    labelStyle={'display': 'inline-block', 'margin-right': '10px'},
+    value=roomtypes
+)
+
 slider_rating =dbc.Card([
     dbc.CardHeader("Rating Range ⭐",
                    style={'font-size':'18px',
@@ -111,9 +121,7 @@ layout = dbc.Container(
             html.Iframe(id='vp', width='950', height='400')
         ]),
         html.H3('2. City vs Average Price Comparison'),
-        html.Div([
-            dropdown_roomtype2
-        ], style = {'width': '20%'}),
+        chk_roomtype,
         html.Div([
             html.Iframe(
                 id='line-plot', width='900', height='600'
@@ -151,23 +159,36 @@ layout = dbc.Container(
 
 @callback(
     Output('line-plot', 'srcDoc'),
-    [Input('dropdown-roomtype2', 'value')]
+    [Input('chk-roomtype', 'value')]
 )
-def line_plot(value1):
-    data = airbnb_data[airbnb_data['room_type'] == value1]
+def line_plot(value):
+    data = airbnb_data[airbnb_data['room_type'].isin(value)]
     line_city_vs_price_base = alt.Chart(data).encode(
         y=alt.Y('mean(price)', title='Average Price (CAD)', axis=alt.Axis(titleFontSize=15, labelFontSize=13), scale=alt.Scale(zero=False)),
         x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-        tooltip= alt.Tooltip('mean(price)', title='Average Price (CAD)')
+        tooltip= [
+            alt.Tooltip('mean(price)', title='Average Price (CAD)', format='$.2f'),
+            alt.Tooltip('city', title='City')
+        ]
     )
 
-    line_city_vs_price = line_city_vs_price_base.mark_point(size=10).properties(
+    line_city_vs_price = line_city_vs_price_base.mark_line().properties(
         width=700,
         height=450
     )
     
     return line_city_vs_price.to_html()
-    
+
+@callback(
+    Output('chk-roomtype', 'value'),
+    [Input('chk-roomtype', 'value')]
+)
+def validate_checklist(value):
+    if value is None or len(value) == 0:
+        return roomtypes
+    else:
+        return value
+
 @callback(
     Output('vp', 'srcDoc'),
     [Input('rating_silder', 'value')]
