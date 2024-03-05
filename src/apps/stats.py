@@ -60,9 +60,6 @@ dropdown_roomtype = dbc.Select(
     options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
     value=roomtypes[0])
 # Plots
-# click = alt.selection_interval(fields=['city'], bind='legend')
-click = alt.selection_multi(fields=['city'], bind='legend')
-brush = alt.selection_interval()
 click = alt.selection_multi(fields=['city'], bind='legend')
 brush = alt.selection_interval()
 
