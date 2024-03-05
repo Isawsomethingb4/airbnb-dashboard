@@ -23,16 +23,6 @@ CONTENT_STYLE = {
 
 # App Components
 
-chk_roomtype = dbc.Checklist(
-    id='chk-roomtype',
-    options=[
-        {'label': roomtype, 'value': roomtype} for roomtype in roomtypes
-    ],
-    inline=True,
-    labelStyle={'display': 'inline-block', 'margin-right': '10px'},
-    value=roomtypes
-)
-
 slider_rating =dbc.Card([
     dbc.CardHeader("Rating Range ⭐",
                    style={'font-size':'18px',
@@ -57,6 +47,11 @@ slider_review = dbc.Card([
 
 dropdown_roomtype = dbc.Select(
     id='dropdown-roomtype',
+    options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
+    value=roomtypes[0])
+
+dropdown_roomtype2 = dbc.Select(
+    id='dropdown-roomtype2',
     options=[{'label': roomtype, 'value': roomtype} for roomtype in roomtypes],
     value=roomtypes[0])
 # Plots
@@ -116,10 +111,12 @@ layout = dbc.Container(
             html.Iframe(id='vp', width='950', height='400')
         ]),
         html.H3('2. City vs Average Price Comparison'),
-        chk_roomtype,
+        html.Div([
+            dropdown_roomtype2
+        ], style = {'width': '20%'}),
         html.Div([
             html.Iframe(
-                id='line-plot', width='400', height='400'
+                id='line-plot', width='900', height='600'
             )
         ]),
         html.H3('3. Rating vs Average Price'),
@@ -154,31 +151,22 @@ layout = dbc.Container(
 
 @callback(
     Output('line-plot', 'srcDoc'),
-    [Input('chk-roomtype', 'value')]
+    [Input('dropdown-roomtype2', 'value')]
 )
-def line_plot(value=roomtypes):
-    data = airbnb_data[airbnb_data['room_type'].isin(value)]
+def line_plot(value1):
+    data = airbnb_data[airbnb_data['room_type'] == value1]
     line_city_vs_price_base = alt.Chart(data).encode(
-        y=alt.Y('mean(price)', title='Average Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13), scale=alt.Scale(zero=False)),
-        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13))
+        y=alt.Y('mean(price)', title='Average Price (CAD)', axis=alt.Axis(titleFontSize=15, labelFontSize=13), scale=alt.Scale(zero=False)),
+        x=alt.X('city', title='City', axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+        tooltip= alt.Tooltip('mean(price)', title='Average Price (CAD)')
     )
 
     line_city_vs_price = line_city_vs_price_base.mark_point(size=10) + line_city_vs_price_base.mark_line().properties(
-        width=400,
-        height=200
+        width=700,
+        height=450
     )
     
     return line_city_vs_price.to_html()
-
-@callback(
-    Output('chk-roomtype', 'value'),
-    [Input('chk-roomtype', 'value')]
-)
-def validate_checklist(value):
-    if value is None or len(value) == 0:
-        return roomtypes
-    else:
-        return value
     
 @callback(
     Output('vp', 'srcDoc'),
@@ -196,7 +184,7 @@ def update_violin_plot(choice):
                                                 groupby=["room_type"]).mark_area(
         orient='horizontal').encode(
         x = alt.X('density:Q', stack='center', impute=None, title=None, axis = alt.Axis(labels=False, values=[0], grid=False, ticks=True)),
-        y = alt.Y('price:Q', title='Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
+        y = alt.Y('price:Q', title='Price', axis=alt.Axis(titleFontSize=15, labelFontSize=13, format='$.3s')),
         color = alt.Color('room_type:N'),
         column = alt.Column('room_type:N', spacing=0, header= alt.Header(titleOrient='bottom', labelOrient='bottom', labelPadding=0,titleFontSize=15,labelFontSize=13,title='Room Type')),
         tooltip="price"
@@ -220,7 +208,7 @@ def update_price_rate_scatter(reviews):
         min_value, max_value = reviews
     df_new = airbnb_data[(airbnb_data.number_of_reviews >= min_value) & (airbnb_data.number_of_reviews <= max_value)]
     scatter = alt.Chart(df_new).mark_point(filled=False, clip=True).encode(
-        y=alt.Y("mean(price)", title="Average price", axis=alt.Axis(titleFontSize=15, labelFontSize=13),
+        y=alt.Y("mean(price)", title="Average price (CAD)", axis=alt.Axis(titleFontSize=15, labelFontSize=13, format = '$s'),
                 scale=alt.Scale(domain=[0, 600])),
         x=alt.X("rating:Q", title="Rating", axis=alt.Axis(titleFontSize=15, labelFontSize=13),
                 scale=alt.Scale(zero=False)),
