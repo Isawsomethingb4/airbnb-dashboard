@@ -99,7 +99,11 @@ bars = (alt.Chart(airbnb_data).mark_bar().encode(
     y=alt.Y('city', title="City", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
     opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
     .transform_filter(brush))
-chart=int1.properties(height=450,width=350)| (int2 & bars).add_params(click)
+
+chart = (int1.properties(height=450, width=350) | (int2 & bars)).add_selection(
+    click
+)
+
 
 # Layout
 layout = dbc.Container(
