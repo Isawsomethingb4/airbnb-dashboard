@@ -3,8 +3,8 @@ from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 import os
 # --------------------------------APP-------------------------
-# pages_folder = os.getcwd() + '/apps'
-app=Dash(__name__, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
+#pages_folder = os.getcwd() + '/apps'
+app=Dash(__name__, use_pages=True, pages_folder='/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/src/apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
@@ -12,7 +12,7 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "20%",
+    "width": "18%",
     "padding": "2rem 2rem",
     "background-color": "#F8F9FA",
     "float" : "left"
@@ -24,13 +24,13 @@ sidebar = html.Div(
         html.Hr(),
         html.P(
             "BnB Beacon is your comprehensive dashboard for unlocking valuable insights into Airbnb data.", className="lead"
-        , style={"textAlign": "center"}),
+        , style={"textAlign": "center", "font-family": "Rockwell"}),
         html.Hr(),
         dbc.Nav(
             [
-                dbc.NavLink("Map", href="/", active="exact", style={"textAlign": "center", 'fontSize':25}),
+                dbc.NavLink("Map", href="/", active="exact", style={"textAlign": "center", 'fontSize':25, "font-family": "Rockwell"}),
                 html.Br(),
-                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':25}),
+                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':25, "font-family": "Rockwell"}),
             ],
             vertical=True,
             pills=True,
@@ -45,7 +45,7 @@ app.layout=html.Div([
         dash.page_container
         ],
         className='content',
-        style={'width': '80%', 'float': 'right'})
+        style={'width': '82%', 'float': 'right'})
     ])
 if __name__ == "__main__":
 
