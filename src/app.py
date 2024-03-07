@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 import os
 # --------------------------------APP-------------------------
 #pages_folder = os.getcwd() + '/apps'
-app=Dash(__name__, use_pages=True, pages_folder='/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/src/apps', external_stylesheets=[dbc.themes.JOURNAL])
+app=Dash(__name__, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
