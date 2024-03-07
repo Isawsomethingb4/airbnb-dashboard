@@ -9,7 +9,7 @@ dash.register_page(__name__, path='/statistics')
 
 # Import dataset
 
-airbnb_data = pd.read_csv("/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/src/data/processed/airbnb_data.csv")
+airbnb_data = pd.read_csv("/data/processed/airbnb_data.csv")
 alt.data_transformers.enable('default', max_rows=None)
 airbnb_data['rating'] = pd.to_numeric(airbnb_data['rating'])
 roomtypes = airbnb_data['room_type'].unique().tolist()
