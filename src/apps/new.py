@@ -7,7 +7,7 @@ from dash_table import DataTable
 import pandas as pd
 import numpy as np
 import altair as alt
-dash.register_page(__name__, path='/experience')
+dash.register_page(__name__, path='/new')
 
 airbnb_data =  pd.read_csv("../data/processed/airbnb_data.csv")
 airbnb_data.dropna(subset=airbnb_data.columns.difference(['license']), inplace=True)
@@ -48,14 +48,14 @@ dropdown_choice = dbc.Card([
                           'background':'rgba(0,0,0,0)',
                           'textAlign':'center'}),
     dbc.CardBody([
-        dcc.Dropdown(id="features",
+        dcc.Dropdown(id="feature",
                      options=[
                          {'label': 'Rating', 'value': 'Rating'},
                          {'label': 'Reviews', 'value': 'Reviews'},
                          {'label': 'Minimum Nights', 'value': 'Minimum Nights'}],
                      value='Minimum Nights'),
         html.Br(),
-        html.H4(id="formular",
+        html.H4(id="formulars",
                 style={
                     'textAlign': 'center',
                     'color': '#FF9874',
@@ -76,7 +76,7 @@ dropdown_choice = dbc.Card([
 hosts = dbc.Card([
 
     dbc.CardBody([DataTable(
-        id='hosts',
+        id='Host',
         columns=[
             {'name': 'Top Hosts', 'id': 'host_name', 'presentation': 'markdown'},
         ],
@@ -97,34 +97,61 @@ hosts = dbc.Card([
 
 
 # Layout
-layout = dbc.Container(
-    [
-        # html.H1("User Concerns", style={"textAlign": "center"}),
+layout=dbc.Container(
+    children=[
         dbc.Stack([
-            html.Br(),
-            html.H1("User Concerns", style={"textAlign": "center", 'color': '#FF9874', 'fontSize': 55,
-                                            "textShadow": "2px 2px 2px #000000"})]),
-        html.P("Explore Average Price based on important Features and make a best choice.",
-               style={"textAlign": "center"}),
-        html.Hr(),
-            dbc.Row([
-                dbc.Col(hosts),
-                dbc.Col(dropdown_choice)
-        ]),
-        html.Br(),
-        # html.Div([
-            html.Iframe(id='x_axis', width='1250', height='1000')
-        # ])
+            dbc.Stack([
+                dbc.Stack([
+                    html.Br(),
+                    html.H1("User Concerns", style={"textAlign": "center", 'color' : '#FF9874', 'fontSize': 55, "textShadow": "2px 2px 2px #000000"}),
+                    html.Br()]),
+                dbc.Stack([
+                    # html.Div(hosts),  # Set width to 6 for half the row
+                    html.Div(dropdown_choice)  # Set width to 6 for half the row
+                ], direction = 'horizontal'),
+                dbc.Stack([
+                    # html.Div(hosts),
+                    # html.Div(number),
+                    html.Div(hosts)], gap =1)
+            ], gap = 1),  # Set width to 6 for half the container
+            dbc.Stack([
+                dbc.Stack([html.Br(),html.Br(),html.Br()], direction = 'horizontal'),
+            dbc.Stack([
+            html.Iframe(id='x_labelname', width='1250', height='1000')], direction = 'horizontal')
+        ])
+])
+
     ],
     style=CONTENT_STYLE,
-    fluid=False
+    fluid=False,
 )
+
+
+#
+# layout = dbc.Container(
+#     [
+#         html.H1("User Concerns", style={"textAlign": "center"}),
+#         html.P("Explore Average Price based on important Features and make a best choice.",
+#                style={"textAlign": "center"}),
+#         html.Hr(),
+#             dbc.Row([
+#                 dbc.Col(hosts),
+#                 dbc.Col(dropdown_choice)
+#         ]),
+#         html.Br(),
+#         # html.Div([
+#             html.Iframe(id='x_labelname', width='1250', height='1000')
+#         # ])
+#     ],
+#     style=CONTENT_STYLE,
+#     fluid=False
+# )
 
 
 # ---------------------call back-------------------
 @callback(
-    Output('formular', 'children'),
-    [Input('features', 'value')]
+    Output('formulars', 'children'),
+    [Input('feature', 'value')]
 )
 def update_table(variables):
     if variables == "Minimum Nights":
@@ -136,8 +163,8 @@ def update_table(variables):
     return text
 
 @callback(
-    Output('hosts', 'data'),
-    [Input('features', 'value')]
+    Output('Host', 'data'),
+    [Input('feature', 'value')]
 )
 def update_table(variables):
     if variables == "Minimum Nights":
@@ -163,8 +190,8 @@ def update_table(variables):
 
 
 @callback(
-        Output('x_axis', 'srcDoc'),
-        [Input('features', 'value')]
+        Output('x_labelname', 'srcDoc'),
+        [Input('feature', 'value')]
 )
 def update_plots(x_label):
     color = ["#fb5607", "#ffd60a", "#15616d", "#540b0e"]
