@@ -5,7 +5,7 @@ import dash_vega_components as dvc
 import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
-dash.register_page(__name__, path='/statistics')
+dash.register_page(__name__, path='/roomType')
 
 # Import dataset
 
@@ -34,9 +34,9 @@ slider_price = dbc.Card([
                           'textAlign':'center'}),
     dbc.CardBody([
         dcc.RangeSlider(id='slider_price',
-                        min=airbnb_data['price'].min(),
+                        min=0,
                         max=1000,
-                        value=[airbnb_data['price'].min(), 1000],
+                        value=[0, 1000],
                         
                         tooltip={
                             'placement': 'bottom',
@@ -57,8 +57,8 @@ slider_price = dbc.Card([
 # Layout
 layout = dbc.Container(
     children=[
-        html.H1('Statistical Insights', style={"textAlign": "center"}),
-        html.P('View the trends of Prices, Ratings etc. across different cities and room types.', style={"textAlign": "center"}),
+        html.H1('Room Type Insights', style={"textAlign": "center", 'color' : '#FF9874', 'fontSize': 55, "textShadow": "2px 2px 2px #000000"}),
+        html.P('Explore room types with dynamic price filtering for insightful booking decisions.', style={"textAlign": "center"}),
         html.Hr(),
         dbc.Stack([
             dbc.Stack([
