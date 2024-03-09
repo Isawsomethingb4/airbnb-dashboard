@@ -5,7 +5,7 @@ import dash_vega_components as dvc
 import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
-dash.register_page(__name__, path='/roomType')
+dash.register_page(__name__, path='/statistics')
 
 # Import dataset
 
