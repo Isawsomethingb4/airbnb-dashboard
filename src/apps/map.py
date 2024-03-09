@@ -54,8 +54,8 @@ city=dbc.Card(
     body=True,
     className='card',
     style={
-                    'width': '124%',
-                    # 'margin-left': '90%' 
+                    'width': '160%',
+                    'margin-left': '0%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
@@ -75,13 +75,13 @@ neighbourhood=dbc.Card(
     className='card',
     style={
                     'width': '130%',
-                    'margin-left': '13%' 
+                    'margin-left': '45%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
 )
 price_slider=dbc.Card([
-    dbc.CardHeader("Price Range($)",
+    dbc.CardHeader("Price Range (CAD)",
                    style={'font-size':'18px',
                           'background':'rgba(0,0,0,0)',
                           'textAlign':'center'}),
@@ -91,19 +91,20 @@ price_slider=dbc.Card([
                         max=default_price_max,
                         value=[default_price_min, default_price_max],
                         #marks={default_price_min: f'${default_price_min}', default_price_max: f'${default_price_max}'},
-                        marks=None,
+                        #marks=None,
+                        
                         tooltip={
                             #'updatemode': 'mouseup',# or 'drag', invalid for unkown reason
                             'placement': 'bottom',
                             'always_visible' : True,
-                        }
+                        }, 
                         )
     ])
 ],
     className='card',
     style={
-                    'width': '250%',
-                    'margin-left': '9%', 
+                    'width': '103.5%',
+                    'margin-left': '0%', 
                      'height': '100%' 
                 #     'margin':'auto',
                  }
@@ -113,36 +114,34 @@ number=dbc.Card(
     dbc.CardBody([
         html.H1("Number of Listings", className='card-title', style={'textAlign': 'center'}),
         html.Hr(),
-        html.Br(),
         html.H1(str(default_listing_count),
                 id='listing_count',
                 style={
                     'textAlign' : 'center',
                     'color' : '#FF9874',
-                    'fontSize': 80
+                    'fontSize': 50
                 })
     ]),
     className='card',
     style={
-                    'width': '90%',
-                    'margin-left': '15%',
+                    'width': '103.5%',
+                    'margin-left': '0%',
                     'height': '100%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
                  }
 )
-listing_map=dbc.Card([
-                    dbc.CardHeader("Listings Across Canada 🍁"),
-                    dcc.Graph(id='listing_map', 
+listing_map=dbc.Card([dcc.Graph(id='listing_map', 
                                   style={'width': '100%', 
                                          'height': '100%'}
                             )
                 ],
                 className= 'card map-card',
                 style={
-                    'width': '100%',
-                    # 'margin-left': '13%' 
-                #     'height': '950px', 
+                    'width': '98%',
+                    'margin-left': '2.8%', 
+                    'height': '200%',
+                    #'margin-right': '100%' 
                 #     'margin':'auto',
                  }
                 )
@@ -159,8 +158,8 @@ hosts = dbc.Card([
         style_as_list_view = True
         )
     ])], style={
-                    'width': '100%',
-                    # 'margin-left': '40%',
+                    'width': '103.5%',
+                    'margin-left': '0%',
                     'height':'100%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
@@ -168,28 +167,26 @@ hosts = dbc.Card([
 # ---------------------layout-------------------
 layout=dbc.Container(
     children=[
-        html.H1("Listing Map", style={"textAlign": "center"}),
-        html.P("Explore Airbnb listings geographically and gain valuable insights at a glance.", style={"textAlign": "center"}),
-        html.Hr(),
-        dbc.Row([
-            dbc.Col([
-                dbc.Row([
-                        dbc.Col(city),
-                        dbc.Col(neighbourhood)
-                    ]),
-                html.Br(),
-                dbc.Row(price_slider)
-                ]),
-            dbc.Col(number),
-            dbc.Col(hosts)
-        ]),
-        html.Br(),
-        dbc.Row([
-            dbc.Col(listing_map)
-        ])
+        dbc.Stack([
+            dbc.Stack([
+                dbc.Stack([
+                    html.Br(),
+                    html.H1("Listing Map", style={"textAlign": "center", 'color' : '#FF9874', 'fontSize': 55, "textShadow": "2px 2px 2px #000000"}),
+                    html.Br()]),
+                dbc.Stack([
+                    html.Div(city),  # Set width to 6 for half the row
+                    html.Div(neighbourhood)  # Set width to 6 for half the row
+                ], direction = 'horizontal'),
+                dbc.Stack([
+                    html.Div(price_slider),
+                    html.Div(number),
+                    html.Div(hosts)], gap =1)
+            ], gap = 1),  # Set width to 6 for half the container
+            dbc.Stack(listing_map)  # Set width to 6 for half the container
+        ], direction = 'horizontal')
     ],
     style=CONTENT_STYLE,
-    fluid=False
+    fluid=False,
 )
 
 
@@ -305,17 +302,16 @@ def update_map(city, neighbourhood, price_range):
     fig=px.scatter_mapbox(
         data_frame=map_data,
         lat='latitude',
-        lon='longitude',
-        hover_data= {'Details'},#{'name', 'By', 'rating', 'Listing', 'price'},
+        lon='longitude', #{'name', 'By', 'rating', 'Listing', 'price'},
         zoom=zoom_size,
         center=dict(lat=center_lat, lon=center_lon)
     )
     
-    fig.update_traces(marker=dict(color='#FF5B4B'))
+    fig.update_traces(marker=dict(color='#FF5B4B', size = 8), hovertemplate = map_data['Details'])
     
     fig.update_layout(
         mapbox_style='open-street-map',
         margin={"r":0,"t":0,"l":0,"b":0},  # Set margins
         hovermode='closest',
-        hoverlabel=dict(namelength=350))
+        hoverlabel=dict(namelength=350, bgcolor='white', font_family = 'Rockwell', font_size = 16))
     return fig
