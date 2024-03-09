@@ -52,5 +52,5 @@ app.layout=html.Div([
     ])
 if __name__ == "__main__":
 
-    app.run_server(port=8051)
+    app.run_server(port=8051,debug=True)
 

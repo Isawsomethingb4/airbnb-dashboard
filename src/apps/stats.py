@@ -41,7 +41,8 @@ slider_rating =dbc.Card([
     dcc.RangeSlider(
     id='rating_silder',
     min=0,
-    max=airbnb_data['rating'].max()
+    max=airbnb_data['rating'].max(),
+    # color='orange'
 ))],style={"height":"100px","width":"850px"})
 
 slider_review = dbc.Card([
