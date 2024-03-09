@@ -3,6 +3,7 @@ from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 import os
 # --------------------------------APP-------------------------
+
 #pages_folder = os.getcwd() + '/apps'
 app=Dash(__name__, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
@@ -30,7 +31,10 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Map", href="/", active="exact", style={"textAlign": "center", 'fontSize':25, "font-family": "Rockwell"}),
                 html.Br(),
-                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':25, "font-family": "Rockwell"}),
+                dbc.NavLink("Statistics", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':25}),
+                html.Br(),
+                dbc.NavLink("Experience", href="/experience", active="exact",
+                            style={"textAlign": "center", 'fontSize': 25})
             ],
             vertical=True,
             pills=True,
