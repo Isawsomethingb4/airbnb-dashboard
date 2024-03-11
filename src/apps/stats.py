@@ -63,7 +63,7 @@ layout = dbc.Container(
         dbc.Stack([
             dbc.Stack([
                 html.Iframe(id='bar-plot', width='600', height='300'),
-                html.Iframe(id='vp', width='600', height='360')    
+                html.Iframe(id='vp', width='600', height='380')    
             ]),
             dbc.Stack([
                 dbc.Card([
