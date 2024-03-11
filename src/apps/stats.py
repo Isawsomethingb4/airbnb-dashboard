@@ -63,7 +63,7 @@ layout = dbc.Container(
         dbc.Stack([
             dbc.Stack([
                 html.Iframe(id='bar-plot', width='600', height='300'),
-                html.Iframe(id='vp', width='600', height='360')    
+                html.Iframe(id='vp', width='600', height='380')    
             ]),
             dbc.Stack([
                 dbc.Card([
@@ -130,7 +130,7 @@ def update_bar_plot(values):
     data = airbnb_data[(airbnb_data.price >= min_value) & (airbnb_data.price <= max_value)]
     
     bar_plot = alt.Chart(data).mark_bar().encode(
-        x = alt.X('room_type', title='Room Type'),
+        x = alt.X('room_type', title=None),
         y = alt.Y('count()', title='Number of Listings'),
         color = alt.Color('room_type'),
         tooltip = alt.Tooltip('count()')
