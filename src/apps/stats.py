@@ -130,7 +130,7 @@ def update_bar_plot(values):
     data = airbnb_data[(airbnb_data.price >= min_value) & (airbnb_data.price <= max_value)]
     
     bar_plot = alt.Chart(data).mark_bar().encode(
-        x = alt.X('room_type', title='Room Type'),
+        x = alt.X('room_type', title=None),
         y = alt.Y('count()', title='Number of Listings'),
         color = alt.Color('room_type'),
         tooltip = alt.Tooltip('count()')
