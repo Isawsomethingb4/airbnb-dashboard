@@ -5,11 +5,11 @@ import pandas as pd
 import altair as alt
 import plotly.express as px
 import plotly.graph_objects as go
+from dash import dash_table
 from dash_table import DataTable
 dash.register_page(__name__, suppress_callback_exceptions=True, path='/')
 # ---------------------import data-------------------
 listings=pd.read_csv("data/processed/airbnb_data.csv")
-# listings=pd.read_csv("/Users/bobbydhada/mds/Data-551/group-proj/airbnb-dashboard/data/processed/airbnb_data.csv")
 CITY=listings['city'].unique().tolist()
 idx_Van_DT=(listings['city']=='Vancouver')&(listings['neighbourhood']=='Downtown')
 default_price_min=listings.loc[idx_Van_DT, 'price'].min()
@@ -18,7 +18,6 @@ default_listing_count=listings.loc[idx_Van_DT, ].shape[0]
 
 default_hosts_vancouver = listings.loc[idx_Van_DT, ['host_name', 'host url', 'rating']]
 default_hosts_grouped = default_hosts_vancouver.groupby('host_name')['rating'].mean().reset_index()
-# Assuming host_url is a column in your DataFrame
 hosts_average = default_hosts_vancouver[['host_name', 'rating', 'host url']].copy()
 # Merge the grouped mean ratings with the original DataFrame
 hosts_average = hosts_average.merge(default_hosts_grouped, on='host_name', suffixes=('', '_mean'))
@@ -74,7 +73,7 @@ neighbourhood=dbc.Card(
     #style={'width' : '350px'}
     className='card',
     style={
-                    'width': '130%',
+                    'width': '140%',
                     'margin-left': '45%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
@@ -180,8 +179,8 @@ layout=dbc.Container(
                 dbc.Stack([
                     html.Div(price_slider),
                     html.Div(number),
-                    html.Div(hosts)], gap =1)
-            ], gap = 1),  # Set width to 6 for half the container
+                    html.Div(hosts)], gap = 3)
+            ], gap = 3),  # Set width to 6 for half the container
             dbc.Stack(listing_map)  # Set width to 6 for half the container
         ], direction = 'horizontal')
     ],
@@ -212,6 +211,7 @@ def update_neighbourhood(city):
     neighbourhoods=sorted(listings.loc[listings['city']==city, 'neighbourhood'].unique().tolist())
     options=[{'label': neighbourhood, 'value': neighbourhood} for neighbourhood in neighbourhoods]
     return options
+
 # decide price range according to city and neighbourhood
 @callback(
     [Output('price', 'min'),
@@ -230,6 +230,7 @@ def update_price_range(city, neighbourhood):
     max_price=price.max()
     range=[min_price, max_price + 15]
     return min_price, max_price + 15, range
+
 # display listing count according to city and neighbourhood
 @callback(
     Output('listing_count', 'children'),
@@ -244,25 +245,26 @@ def update_listing_count(city, neighbourhood, price_range):
         idx=(listings['city']==city)&(listings['price'].between(price_range[0], price_range[1]))
     count=listings.loc[idx, ].shape[0]
     return count
-# the map plot
 
+# top host table
 @callback(
     Output('hosts-table', 'data'),
     [ Input('city', 'value'),
      Input('neighbourhood', 'value'),
      Input('price', 'value')]
 )
-def update_table(neighbourhood, city, price_range):
-    if neighbourhood != None:
-        idx = (listings['neighbourhood'] == city) & (listings['city'] == neighbourhood) & (listings['price'].between(price_range[0], price_range[1]))
+def update_table(city, neighbourhood, price_range):
+    if neighbourhood is not None:
+        idx = (listings['city'] == city) & (listings['neighbourhood'] == neighbourhood) & (listings['price'].between(price_range[0], price_range[1]))
     else:
-        idx = (listings['neighbourhood'] == city) & (listings['price'].between(price_range[0], price_range[1]))
+        idx = (listings['city'] == city) & (listings['price'].between(price_range[0], price_range[1]))
     data_filtered = listings.loc[idx, ['host_name', 'host url', 'rating']]
+    if data_filtered.empty:
+        return None
     default_hosts_grouped = data_filtered.groupby('host_name')['rating'].mean().reset_index()
-    # Assuming host_url is a column in your DataFrame
     hosts_average = data_filtered[['host_name', 'rating', 'host url']].copy()
     # Merge the grouped mean ratings with the original DataFrame
-    hosts_average = hosts_average.merge(default_hosts_grouped, on='host_name', suffixes=('', '_mean'))
+    hosts_average = hosts_average.merge(default_hosts_grouped, on='host_name', suffixes=('', '_mean'), how='left')
     # Rename columns for clarity
     hosts_average = hosts_average.rename(columns={'rating_mean': 'average_rating'})
     hosts_average.sort_values(by=['average_rating'], ascending=False, inplace=True)
@@ -277,6 +279,7 @@ def update_table(neighbourhood, city, price_range):
         n += 1
     return hosts_data
 
+# the map plot
 @callback(
     Output('listing_map', 'figure'),
     [Input('city', 'value'),
