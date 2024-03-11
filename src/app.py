@@ -33,8 +33,7 @@ sidebar = html.Div(
                 html.Br(),
                 dbc.NavLink("Room Type Insights", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':20}),
                 html.Br(),
-                dbc.NavLink("Experience", href="/experience", active="exact",
-                            style={"textAlign": "center", 'fontSize': 20})
+                dbc.NavLink("Experience", href="/experience", active="exact", style={"textAlign": "center", 'fontSize': 20})
             ],
             vertical=True,
             pills=True,
