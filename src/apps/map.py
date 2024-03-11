@@ -73,7 +73,7 @@ neighbourhood=dbc.Card(
     #style={'width' : '350px'}
     className='card',
     style={
-                    'width': '140%',
+                    'width': '130%',
                     'margin-left': '45%' 
                 #     'height': '950px', 
                 #     'margin':'auto',
