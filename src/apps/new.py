@@ -2,6 +2,7 @@ import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_vega_components as dvc
+from dash import callback_context
 import dash_bootstrap_components as dbc
 from dash_table import DataTable
 import pandas as pd
@@ -12,7 +13,7 @@ dash.register_page(__name__, path='/new')
 airbnb_data =  pd.read_csv("../data/processed/airbnb_data.csv")
 airbnb_data.dropna(subset=airbnb_data.columns.difference(['license']), inplace=True)
 airbnb_data=airbnb_data.query("minimum_nights < 90 and rating<5 and rating>3.5")
-airbnb_data.rename(columns={"rating":"Rating","minimum_nights":"Minimum Nights","number_of_reviews":"Reviews"},inplace=True)
+airbnb_data.rename(columns={"host_name":"Host Name","rating":"Rating","minimum_nights":"Minimum Nights","number_of_reviews":"Reviews"},inplace=True)
 def round_to_ten(x):
     return np.ceil(x / 20) * 20
 airbnb_data["Reviews"]=airbnb_data["Reviews"].apply(round_to_ten)
@@ -27,7 +28,7 @@ airbnb_data["Minimum Nights"] = airbnb_data["Minimum Nights"].apply(round_to_poi
 airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"]*airbnb_data["price"]
 hosts_average = airbnb_data.sort_values(by=["default_hosts"])
 hosts_average = hosts_average.iloc[0:3]
-default_hosts = hosts_average[['host_name', 'host url',"Minimum Nights"]]
+default_hosts = hosts_average[['Host Name', 'host url',"Minimum Nights","price"]]
 # ---------------------content style-------------------
 CONTENT_STYLE = {
     "margin-left": "0%",
@@ -41,156 +42,76 @@ CONTENT_STYLE = {
 # Plot
 alt.data_transformers.enable('default', max_rows=None)
 
-# App Components
-dropdown_choice = dbc.Card([
-    dbc.CardHeader("What do you concern?",
-                   style={'font-size':'18px',
-                          'background':'rgba(0,0,0,0)',
-                          'textAlign':'center'}),
-    dbc.CardBody([
-        dcc.Dropdown(id="feature",
-                     options=[
-                         {'label': 'Rating', 'value': 'Rating'},
-                         {'label': 'Reviews', 'value': 'Reviews'},
-                         {'label': 'Minimum Nights', 'value': 'Minimum Nights'}],
-                     value='Minimum Nights'),
-        html.Br(),
-        html.H4(id="formulars",
-                style={
-                    'textAlign': 'center',
-                    'color': '#FF9874',
-                    'fontSize': 25
-                }
-                )
-    ])
-],
-    className='card',
-    style={
-                    'width': '60%',
-                    'margin-left': '18%',
-                     'height': '100%'
-                #     'margin':'auto',
-                 }
-)
-
-hosts = dbc.Card([
-
-    dbc.CardBody([DataTable(
-        id='Host',
-        columns=[
-            {'name': 'Top Hosts', 'id': 'host_name', 'presentation': 'markdown'},
-        ],
-        data=default_hosts.to_dict('records'),
-        style_table={'height': '100%', 'overflowY': 'auto'},
-        style_cell={'textAlign': 'center', 'fontSize':'20px'},
-        style_as_list_view = True
-        )
-    ])], style={
-                    'width': '100%',
-                    # 'margin-left': '40%',
-                    'height':'100%'
-                #     'height': '950px',
-                #     'margin':'auto',
-                 })
-
-
-
-
-# Layout
-layout=dbc.Container(
-    children=[
-        dbc.Stack([
-            dbc.Stack([
-                dbc.Stack([
-                    html.Br(),
-                    html.H1("User Concerns", style={"textAlign": "center", 'color' : '#FF9874', 'fontSize': 55, "textShadow": "2px 2px 2px #000000"}),
-                    html.Br()]),
-                dbc.Stack([
-                    # html.Div(hosts),  # Set width to 6 for half the row
-                    html.Div(dropdown_choice)  # Set width to 6 for half the row
-                ], direction = 'horizontal'),
-                dbc.Stack([
-                    # html.Div(hosts),
-                    # html.Div(number),
-                    html.Div(hosts)], gap =1)
-            ], gap = 1),  # Set width to 6 for half the container
-            dbc.Stack([
-                dbc.Stack([html.Br(),html.Br(),html.Br()], direction = 'horizontal'),
-            dbc.Stack([
-            html.Iframe(id='x_labelname', width='1250', height='1000')], direction = 'horizontal')
-        ])
-])
-
-    ],
-    style=CONTENT_STYLE,
-    fluid=False,
-)
-
-
-#
-# layout = dbc.Container(
-#     [
-#         html.H1("User Concerns", style={"textAlign": "center"}),
-#         html.P("Explore Average Price based on important Features and make a best choice.",
-#                style={"textAlign": "center"}),
-#         html.Hr(),
-#             dbc.Row([
-#                 dbc.Col(hosts),
-#                 dbc.Col(dropdown_choice)
-#         ]),
+# # App Components
+# dropdown_choice = dbc.Card([
+#     dbc.CardHeader("What do you concern?",
+#                    style={'font-size':'18px',
+#                           'background':'rgba(0,0,0,0)',
+#                           'textAlign':'center'}),
+#     dbc.CardBody([
+#         dcc.Dropdown(id="features",
+#                      options=[
+#                          {'label': 'Rating', 'value': 'Rating'},
+#                          {'label': 'Reviews', 'value': 'Reviews'},
+#                          {'label': 'Minimum Nights', 'value': 'Minimum Nights'}],
+#                      value='Minimum Nights'),
 #         html.Br(),
-#         # html.Div([
-#             html.Iframe(id='x_labelname', width='1250', height='1000')
-#         # ])
-#     ],
-#     style=CONTENT_STYLE,
-#     fluid=False
+#         html.H4(id="formular",
+#                 style={
+#                     'textAlign': 'center',
+#                     'color': '#FF9874',
+#                     'fontSize': 25
+#                 }
+#                 )
+#     ])
+# ],
+#     className='card',
+#     style={
+#                     'width': '60%',
+#                     'margin-left': '18%',
+#                      'height': '100%'
+#                 #     'margin':'auto',
+#                  }
 # )
 
 
+# Layout
+layout = dbc.Container(
+    [
+        # html.H1("User Concerns", style={"textAlign": "center"}),
+        dbc.Stack([
+            # html.Br(),
+            html.H1("User Concerns", style={"textAlign": "center", 'color': '#FF9874', 'fontSize': 45,
+                                            "textShadow": "2px 2px 2px #000000"})]),
+        html.P("Explore Average Price based on important Features and make a best choice.",
+               style={"textAlign": "center"}),
+        # html.Hr(),
+            dbc.CardBody([
+                dcc.Dropdown(id="feature",
+                             options=[
+                                 {'label': 'Rating', 'value': 'Rating'},
+                                 {'label': 'Reviews', 'value': 'Reviews'},
+                                 {'label': 'Minimum Nights', 'value': 'Minimum Nights'}],
+                             value='Minimum Nights') ]),
+        #     dbc.Row([
+        #         dbc.Col(hosts),
+        #         dbc.Col(dropdown_choice)
+        # ]),
+        # html.Br(),
+        # html.Div([
+            html.Iframe(id='x_axis_label', width='1250', height='1000')
+        # ])
+    ],
+    style=CONTENT_STYLE,
+    fluid=False
+)
+
+
 # ---------------------call back-------------------
-@callback(
-    Output('formulars', 'children'),
-    [Input('feature', 'value')]
-)
-def update_table(variables):
-    if variables == "Minimum Nights":
-        text = "Minimum Nights * Price"
-    elif variables == "Reviews":
-        text = "Top 3 Reviews, Cheapest Price"
-    else:
-        text = "Top 3 Ratings, Cheapest Price"
-    return text
-
-@callback(
-    Output('Host', 'data'),
-    [Input('feature', 'value')]
-)
-def update_table(variables):
-    if variables == "Minimum Nights":
-        airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"] * airbnb_data["price"]
-        hosts_average = airbnb_data.sort_values(by=["default_hosts"])
-        hosts_average = hosts_average.iloc[0:3]
-        default_hosts = hosts_average[['host_name', 'host url','Minimum Nights','price']]
-    elif variables == "Reviews":
-        hosts_average = airbnb_data.sort_values(by=["Reviews", "price"], ascending=[False, True])
-        hosts_average = hosts_average.iloc[0:3]
-        default_hosts = hosts_average[['host_name', 'host url','Reviews','price']]
-    else:
-        hosts_average = airbnb_data.sort_values(by=["Rating", "price"], ascending=[False, True])
-        hosts_average = hosts_average.iloc[0:3]
-        default_hosts = hosts_average[['host_name', 'host url','price','Rating']]
-    hosts_data = default_hosts.to_dict('records')
-    # Format the host names as clickable links
-    n = 1
-    for row in hosts_data:
-        row['host_name'] = f"{n}. [{'HOST NAME: '} {row['host_name']},{'   '}{variables.upper()}{': '}{row[variables]},{'  PRICE: '}{row['price']}]({row['host url']})"
-        n += 1
-    return hosts_data
 
 
 @callback(
-        Output('x_labelname', 'srcDoc'),
+        Output('x_axis_label', 'srcDoc'),
         [Input('feature', 'value')]
 )
 def update_plots(x_label):

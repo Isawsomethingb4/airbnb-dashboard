@@ -2,6 +2,7 @@ import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_vega_components as dvc
+from dash import callback_context
 import dash_bootstrap_components as dbc
 from dash_table import DataTable
 import pandas as pd
@@ -12,7 +13,7 @@ dash.register_page(__name__, path='/experience')
 airbnb_data =  pd.read_csv("../data/processed/airbnb_data.csv")
 airbnb_data.dropna(subset=airbnb_data.columns.difference(['license']), inplace=True)
 airbnb_data=airbnb_data.query("minimum_nights < 90 and rating<5 and rating>3.5")
-airbnb_data.rename(columns={"rating":"Rating","minimum_nights":"Minimum Nights","number_of_reviews":"Reviews"},inplace=True)
+airbnb_data.rename(columns={"host_name":"Host Name","rating":"Rating","minimum_nights":"Minimum Nights","number_of_reviews":"Reviews"},inplace=True)
 def round_to_ten(x):
     return np.ceil(x / 20) * 20
 airbnb_data["Reviews"]=airbnb_data["Reviews"].apply(round_to_ten)
@@ -27,7 +28,7 @@ airbnb_data["Minimum Nights"] = airbnb_data["Minimum Nights"].apply(round_to_poi
 airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"]*airbnb_data["price"]
 hosts_average = airbnb_data.sort_values(by=["default_hosts"])
 hosts_average = hosts_average.iloc[0:3]
-default_hosts = hosts_average[['host_name', 'host url',"Minimum Nights"]]
+default_hosts = hosts_average[['Host Name', 'host url',"Minimum Nights","price"]]
 # ---------------------content style-------------------
 CONTENT_STYLE = {
     "margin-left": "0%",
@@ -77,12 +78,11 @@ hosts = dbc.Card([
 
     dbc.CardBody([DataTable(
         id='hosts',
-        columns=[
-            {'name': 'Top Hosts', 'id': 'host_name', 'presentation': 'markdown'},
-        ],
+        columns=[{"name": col, "id": col,'presentation': 'markdown'} for col in default_hosts.columns if col != "host url"],
         data=default_hosts.to_dict('records'),
         style_table={'height': '100%', 'overflowY': 'auto'},
-        style_cell={'textAlign': 'center', 'fontSize':'20px'},
+        style_cell={'textAlign': 'left', 'fontSize':'20px'},
+        # style_data={'textAlign': 'right', 'fontSize':'18px'},
         style_as_list_view = True
         )
     ])], style={
@@ -101,7 +101,7 @@ layout = dbc.Container(
     [
         # html.H1("User Concerns", style={"textAlign": "center"}),
         dbc.Stack([
-            html.Br(),
+            # html.Br(),
             html.H1("User Concerns", style={"textAlign": "center", 'color': '#FF9874', 'fontSize': 55,
                                             "textShadow": "2px 2px 2px #000000"})]),
         html.P("Explore Average Price based on important Features and make a best choice.",
@@ -111,7 +111,7 @@ layout = dbc.Container(
                 dbc.Col(hosts),
                 dbc.Col(dropdown_choice)
         ]),
-        html.Br(),
+        # html.Br(),
         # html.Div([
             html.Iframe(id='x_axis', width='1250', height='1000')
         # ])
@@ -136,31 +136,39 @@ def update_table(variables):
     return text
 
 @callback(
-    Output('hosts', 'data'),
+    [
+        Output('hosts', 'data'),
+        Output('hosts', 'columns')
+    ],
     [Input('features', 'value')]
 )
 def update_table(variables):
-    if variables == "Minimum Nights":
-        airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"] * airbnb_data["price"]
-        hosts_average = airbnb_data.sort_values(by=["default_hosts"])
-        hosts_average = hosts_average.iloc[0:3]
-        default_hosts = hosts_average[['host_name', 'host url','Minimum Nights','price']]
-    elif variables == "Reviews":
-        hosts_average = airbnb_data.sort_values(by=["Reviews", "price"], ascending=[False, True])
-        hosts_average = hosts_average.iloc[0:3]
-        default_hosts = hosts_average[['host_name', 'host url','Reviews','price']]
-    else:
-        hosts_average = airbnb_data.sort_values(by=["Rating", "price"], ascending=[False, True])
-        hosts_average = hosts_average.iloc[0:3]
-        default_hosts = hosts_average[['host_name', 'host url','price','Rating']]
-    hosts_data = default_hosts.to_dict('records')
-    # Format the host names as clickable links
-    n = 1
-    for row in hosts_data:
-        row['host_name'] = f"{n}. [{'HOST NAME: '} {row['host_name']},{'   '}{variables.upper()}{': '}{row[variables]},{'  PRICE: '}{row['price']}]({row['host url']})"
-        n += 1
-    return hosts_data
+    triggered_input = callback_context.triggered[0]['prop_id'].split('.')[0]
 
+    if triggered_input == 'features':
+        if variables == "Minimum Nights":
+            airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"] * airbnb_data["price"]
+            hosts_average = airbnb_data.sort_values(by=["default_hosts"])
+            hosts_average = hosts_average.iloc[0:3]
+            default_hosts = hosts_average[['Host Name', 'host url', 'Minimum Nights', 'price']]
+        elif variables == "Reviews":
+            hosts_average = airbnb_data.sort_values(by=["Reviews", "price"], ascending=[False, True])
+            hosts_average = hosts_average.iloc[0:3]
+            default_hosts = hosts_average[['Host Name', 'host url', 'Reviews', 'price']]
+        else:
+            hosts_average = airbnb_data.sort_values(by=["Rating", "price"], ascending=[False, True])
+            hosts_average = hosts_average.iloc[0:3]
+            default_hosts = hosts_average[['Host Name', 'host url', 'price', 'Rating']]
+        hosts_data = default_hosts.to_dict('records')
+        n = 1
+        for row in hosts_data:
+            row['Host Name'] = f"{n}. [{row['Host Name']}]({row['host url']})"
+            n += 1
+        columns = [{"name": col, "id": col, 'presentation': 'markdown'} for col in default_hosts.columns if
+                   col != "host url"]
+        return hosts_data, columns
+    else:
+        return dash.no_update, dash.no_update
 
 @callback(
         Output('x_axis', 'srcDoc'),
