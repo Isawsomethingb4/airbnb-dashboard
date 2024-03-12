@@ -10,7 +10,7 @@ import numpy as np
 import altair as alt
 dash.register_page(__name__, path='/new')
 
-airbnb_data =  pd.read_csv("../data/processed/airbnb_data.csv")
+airbnb_data =  pd.read_csv("data/processed/airbnb_data.csv")
 airbnb_data.dropna(subset=airbnb_data.columns.difference(['license']), inplace=True)
 airbnb_data=airbnb_data.query("minimum_nights < 90 and rating<5 and rating>3.5")
 airbnb_data.rename(columns={"host_name":"Host Name","rating":"Rating","minimum_nights":"Minimum Nights","number_of_reviews":"Reviews"},inplace=True)
