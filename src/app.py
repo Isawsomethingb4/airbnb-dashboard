@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 import os
 # --------------------------------APP-------------------------
 
+
 # pages_folder = os.getcwd() + '/apps'
 app=Dash(__name__, use_pages=True, pages_folder='/apps', external_stylesheets=[dbc.themes.JOURNAL])
 server=app.server
@@ -33,7 +34,12 @@ sidebar = html.Div(
                 html.Br(),
                 dbc.NavLink("Room Type Insights", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':20}),
                 html.Br(),
-                dbc.NavLink("Experience", href="/experience", active="exact", style={"textAlign": "center", 'fontSize': 20})
+                dbc.NavLink("Price Trend", href="/price_trend", active="exact",
+                            style={"textAlign": "center", 'fontSize': 20}),
+                html.Br(),
+                dbc.NavLink("New", href="/new", active="exact",
+                            style={"textAlign": "center", 'fontSize': 20})
+
             ],
             vertical=True,
             pills=True,
