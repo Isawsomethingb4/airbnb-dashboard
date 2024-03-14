@@ -28,7 +28,11 @@ airbnb_data["Minimum Nights"] = airbnb_data["Minimum Nights"].apply(round_to_poi
 airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"]*airbnb_data["price"]
 hosts_average = airbnb_data.sort_values(by=["default_hosts"])
 hosts_average = hosts_average.iloc[0:3]
-default_hosts = hosts_average[['Host Name', 'host url',"Minimum Nights","price"]]
+hosts_average[['Nights',"City","Room Type"]] = hosts_average[["Minimum Nights","city","room_type"]]
+default_hosts = hosts_average[['Host Name', 'host url',"Nights","price","City","Room Type"]]
+default_hosts = default_hosts.to_dict('records')
+for m,row in enumerate(default_hosts):
+    row['Host Name'] = f"{m+1}. [{row['Host Name']}]({row['host url']})"
 # ---------------------content style-------------------
 CONTENT_STYLE = {
     "margin-left": "0%",
@@ -55,7 +59,7 @@ dropdown_choice = dbc.Card([
                          {'label': 'Reviews', 'value': 'Reviews'},
                          {'label': 'Minimum Nights', 'value': 'Minimum Nights'}],
                      value='Minimum Nights'),
-        html.Br(),
+        # html.Br(),
         html.H4(id="formular",
                 style={
                     'textAlign': 'center',
@@ -68,8 +72,8 @@ dropdown_choice = dbc.Card([
     className='card',
     style={
                     'width': '60%',
-                    'margin-left': '18%',
-                     'height': '100%'
+                    'margin-left': '25%',
+                     'height': '85%'
                 #     'margin':'auto',
                  }
 )
@@ -78,17 +82,17 @@ hosts = dbc.Card([
 
     dbc.CardBody([DataTable(
         id='hosts',
-        columns=[{"name": col, "id": col,'presentation': 'markdown'} for col in default_hosts.columns if col != "host url"],
-        data=default_hosts.to_dict('records'),
-        style_table={'height': '100%', 'overflowY': 'auto'},
-        style_cell={'textAlign': 'left', 'fontSize':'20px'},
-        # style_data={'textAlign': 'right', 'fontSize':'18px'},
-        style_as_list_view = True
+        columns=[{"name": col, "id": col, 'presentation': 'markdown'} for col in default_hosts[0] if col != "host url"],
+        data=default_hosts,
+        style_table={'height': '100px', 'overflowY': 'scroll','width': '100%'},
+        style_cell={'textAlign': 'center', 'fontSize':'20px'}
+        # style_data={'textAlign': 'right', 'fontSize':'18px'}
+        # style_as_list_view = True
         )
     ])], style={
-                    'width': '100%',
+                    'width': '115%',
                     # 'margin-left': '40%',
-                    'height':'100%'
+                    'height':'85%'
                 #     'height': '950px',
                 #     'margin':'auto',
                  })
@@ -113,7 +117,7 @@ layout = dbc.Container(
         ]),
         # html.Br(),
         # html.Div([
-            html.Iframe(id='x_axis', width='1250', height='1000')
+            html.Iframe(id='x_axis', width="100%", height='1000')
         # ])
     ],
     style=CONTENT_STYLE,
@@ -146,19 +150,21 @@ def update_table(variables):
     triggered_input = callback_context.triggered[0]['prop_id'].split('.')[0]
 
     if triggered_input == 'features':
+        airbnb_data[["City","Room Type"]]=airbnb_data[["city","room_type"]]
         if variables == "Minimum Nights":
             airbnb_data["default_hosts"] = airbnb_data["Minimum Nights"] * airbnb_data["price"]
             hosts_average = airbnb_data.sort_values(by=["default_hosts"])
             hosts_average = hosts_average.iloc[0:3]
-            default_hosts = hosts_average[['Host Name', 'host url', 'Minimum Nights', 'price']]
+            hosts_average['Nights']=hosts_average["Minimum Nights"]
+            default_hosts = hosts_average[['Host Name', 'host url', 'Nights', 'price',"City","Room Type"]]
         elif variables == "Reviews":
             hosts_average = airbnb_data.sort_values(by=["Reviews", "price"], ascending=[False, True])
             hosts_average = hosts_average.iloc[0:3]
-            default_hosts = hosts_average[['Host Name', 'host url', 'Reviews', 'price']]
+            default_hosts = hosts_average[['Host Name', 'host url', 'Reviews', 'price',"City","Room Type"]]
         else:
             hosts_average = airbnb_data.sort_values(by=["Rating", "price"], ascending=[False, True])
             hosts_average = hosts_average.iloc[0:3]
-            default_hosts = hosts_average[['Host Name', 'host url', 'price', 'Rating']]
+            default_hosts = hosts_average[['Host Name', 'host url', 'price', 'Rating',"City","Room Type"]]
         hosts_data = default_hosts.to_dict('records')
         n = 1
         for row in hosts_data:
