@@ -5,3 +5,6 @@ The app has a landing page that shows a map with points that represent a listing
 
 Link to the sketch: 
 https://github.com/somyanagar/airbnb-dashboard/blob/main/App%20sketch.pdf
+
+Link to the dashboard:
+https://bnb-beacon-5f14f8f731bf.herokuapp.com/
