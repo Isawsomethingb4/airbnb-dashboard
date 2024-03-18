@@ -76,7 +76,7 @@ layout = dbc.Container(
                 ]),
                 html.Div([
                     slider_price
-                ], style = {'width': '80%'})
+                ], style = {'width': '96%'})
             ], gap=3)
         ], direction='horizontal')
     ],
