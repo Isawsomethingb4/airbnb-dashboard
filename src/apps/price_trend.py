@@ -116,9 +116,9 @@ layout = dbc.Container(
                 dbc.Col(dropdown_choice)
         ]),
         # html.Br(),
-        # html.Div([
+        html.Div([
             html.Iframe(id='x_axis', width="100%", height='1000')
-        # ])
+         ])
     ],
     style=CONTENT_STYLE,
     fluid=False
