@@ -117,7 +117,7 @@ layout = dbc.Container(
         ]),
         # html.Br(),
         html.Div([
-            html.Iframe(id='x_axis', width="80%", height='1000')
+            html.Iframe(id='x_axis', width="110%", height='1000')
          ])
     ],
     style=CONTENT_STYLE,
