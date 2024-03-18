@@ -35,9 +35,6 @@ sidebar = html.Div(
                 dbc.NavLink("Room Type Insights", href="/statistics", active="exact", style={"textAlign": "center", 'fontSize':20}),
                 html.Br(),
                 dbc.NavLink("Price Trend", href="/price_trend", active="exact",
-                            style={"textAlign": "center", 'fontSize': 20}),
-                html.Br(),
-                dbc.NavLink("New", href="/new", active="exact",
                             style={"textAlign": "center", 'fontSize': 20})
 
             ],
