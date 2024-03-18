@@ -106,7 +106,7 @@ layout = dbc.Container(
         # html.H1("User Concerns", style={"textAlign": "center"}),
         dbc.Stack([
             # html.Br(),
-            html.H1("User Concerns", style={"textAlign": "center", 'color': '#FF9874', 'fontSize': 55,
+            html.H1("Price Trend", style={"textAlign": "center", 'color': '#FF9874', 'fontSize': 55,
                                             "textShadow": "2px 2px 2px #000000"})]),
         html.P("Explore Average Price based on important Features and make a best choice.",
                style={"textAlign": "center"}),
