@@ -131,7 +131,7 @@ def update_bar_plot(values):
     
     bar_plot = alt.Chart(data).mark_bar().encode(
         x = alt.X('room_type', title=None),
-        y = alt.Y('count()', title='Number of Listings'),
+        y = alt.Y('count()', title='Number of Listings', axis=alt.Axis(titleFontSize=15, labelFontSize=13)),
         color = alt.Color('room_type'),
         tooltip = alt.Tooltip('count()')
     ).properties(

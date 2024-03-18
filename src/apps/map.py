@@ -179,8 +179,8 @@ layout=dbc.Container(
                 dbc.Stack([
                     html.Div(price_slider),
                     html.Div(number),
-                    html.Div(hosts)], gap = 3)
-            ], gap = 3),  # Set width to 6 for half the container
+                    html.Div(hosts)], gap = 2)
+            ], gap = 2),  # Set width to 6 for half the container
             dbc.Stack(listing_map)  # Set width to 6 for half the container
         ], direction = 'horizontal')
     ],
