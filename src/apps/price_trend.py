@@ -117,7 +117,7 @@ layout = dbc.Container(
         ]),
         # html.Br(),
         html.Div([
-            html.Iframe(id='x_axis', width="150%", height='1000')
+            html.Iframe(id='x_axis', width="1200", height='450')
          ])
     ],
     style=CONTENT_STYLE,
@@ -193,9 +193,6 @@ def update_plots(x_label):
             alt.Color('count()',scale=alt.Scale(scheme='goldorange')),
             alt.value('lightgray')),
       tooltip = ["count()"]
-    ).properties(
-        width=180,
-        height=180
     ).add_selection(
         brush
     )
