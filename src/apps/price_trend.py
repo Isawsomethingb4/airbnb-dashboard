@@ -72,7 +72,7 @@ dropdown_choice = dbc.Card([
     className='card',
     style={
                     'width': '60%',
-                    'margin-left': '25%',
+                    'margin-left': '35%',
                      'height': '85%'
                 #     'margin':'auto',
                  }
@@ -226,7 +226,7 @@ def update_plots(x_label):
         height=100
     )
 
-    chart = int1.properties(height=350, width=350) | (int2 & bars).add_selection(
+    chart = int1.properties(height=300, width=300) | (int2 & bars).add_selection(
         click
     )
     return chart.to_html()
