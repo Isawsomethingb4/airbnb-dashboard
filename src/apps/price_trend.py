@@ -72,7 +72,7 @@ dropdown_choice = dbc.Card([
     className='card',
     style={
                     'width': '60%',
-                    'margin-left': '35%',
+                    'margin-left': '28%',
                      'height': '85%'
                 #     'margin':'auto',
                  }
@@ -117,7 +117,7 @@ layout = dbc.Container(
         ]),
         # html.Br(),
         html.Div([
-            html.Iframe(id='x_axis', width="100%", height='1000')
+            html.Iframe(id='x_axis', width="100%", height='500')
          ])
     ],
     style=CONTENT_STYLE,
@@ -186,8 +186,8 @@ def update_plots(x_label):
     click = alt.selection_multi(fields=['room_type'], bind='legend')
     brush = alt.selection_interval(resolve='intersect')
     int1 = alt.Chart(airbnb_data).mark_rect(color='orange').encode(
-        x=alt.X("room_type", title="Room Type", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-        y=alt.Y("city", title="City", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+        x=alt.X("room_type", title="Room Type", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=10)),
+        y=alt.Y("city", title="City", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=10)),
         color=alt.condition(
             brush,
             alt.Color('count()',scale=alt.Scale(scheme='goldorange')),
@@ -199,10 +199,10 @@ def update_plots(x_label):
 
     int2 = alt.Chart(airbnb_data).mark_point(filled=False, clip=True).encode(
         y=alt.Y("mean(price)", title="Average Price", scale=alt.Scale(domain=[0, 600]),
-                axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+                axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=10)),
         x=alt.X(x_label, type="quantitative",scale=alt.Scale(zero=False),
                 # title="Minimum Night", scale=alt.Scale(domain=[0, 90], zero=False),
-                axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+                axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=10)),
         color=alt.condition(
             brush,
             alt.Color('room_type:N',scale=alt.Scale(domain=domain_,range=color)),
@@ -217,8 +217,8 @@ def update_plots(x_label):
     )
 
     bars = (alt.Chart(airbnb_data).mark_bar().encode(
-        x=alt.X('count()', title="Count", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
-        y=alt.Y('city', title="City", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
+        x=alt.X('count()', title="Count", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=10)),
+        y=alt.Y('city', title="City", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=10)),
         color= alt.Color('room_type:N',title="Room  Types",scale=alt.Scale(domain=domain_,range=color)),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)), tooltip=["count()"])
             .transform_filter(brush)).properties(
