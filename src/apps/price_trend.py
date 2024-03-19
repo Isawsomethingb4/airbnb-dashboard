@@ -117,7 +117,7 @@ layout = dbc.Container(
         ]),
         # html.Br(),
         html.Div([
-            html.Iframe(id='x_axis', width="1200", height='450')
+            html.Iframe(id='x_axis', width="100%", height='1000')
          ])
     ],
     style=CONTENT_STYLE,
@@ -226,7 +226,7 @@ def update_plots(x_label):
         height=100
     )
 
-    chart = int1.properties(height=450, width=450) | (int2 & bars).add_selection(
+    chart = int1.properties(height=350, width=350) | (int2 & bars).add_selection(
         click
     )
     return chart.to_html()
