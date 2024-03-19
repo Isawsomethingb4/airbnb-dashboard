@@ -212,6 +212,9 @@ def update_plots(x_label):
             alt.value('rgba(240, 240, 240, 0.1)')
         ),
         tooltip=["mean(Rating)", "city"]
+    ).properties(
+        width=250,
+        height=200
     ).add_selection(
         brush
     )
@@ -221,7 +224,10 @@ def update_plots(x_label):
         y=alt.Y('city', title="City", axis=alt.Axis(labelAngle=0, titleFontSize=15, labelFontSize=13)),
         color= alt.Color('room_type:N',title="Room  Types",scale=alt.Scale(domain=domain_,range=color)),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)), tooltip=["count()"])
-            .transform_filter(brush))
+            .transform_filter(brush)).properties(
+        width=250,
+        height=100
+    )
 
     chart = int1.properties(height=450, width=450) | (int2 & bars).add_selection(
         click
