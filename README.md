@@ -12,8 +12,8 @@ https://bnb-beacon-5f14f8f731bf.herokuapp.com/
 
 Demonstration of our dashboard:
 
-![](/Users/yujinxin/Documents/UBC%20MDS/Block5/Data%20551/airbnb-dashboard/doc/map.gif)
+![](./doc/map.gif)
 
-![](/Users/yujinxin/Documents/UBC%20MDS/Block5/Data%20551/airbnb-dashboard/doc/room_type_insights.gif)
+![](./doc/room_type_insights.gif)
 
-![](/Users/yujinxin/Documents/UBC%20MDS/Block5/Data%20551/airbnb-dashboard/doc/price_trend.gif)
+![](./doc/price_trend.gif)
